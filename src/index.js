@@ -1,14 +1,35 @@
 require('dotenv').config()
 
+// Init express
+const express = require('express')
+const app = express()
+
 // Database
 const mongoose = require('mongoose')
 
 // Cors
 const cors = require('cors')
 
-// Init express
-const express = require('express')
-const app = express()
+// Services
+const { ProblemService } = require('./services')
+const problemService = new ProblemService()
+
+// Utils
+const { Response, Tokenize } = require('./utils')
+const response = new Response()
+const tokenize = new Tokenize()
+
+// Validator
+const { Validator } = require('./validators')
+const validator = new Validator()
+
+// Controllers
+const { ProblemController } = require('./controllers')
+const problemController = new ProblemController(problemService, validator, response, tokenize)
+
+// Routes
+const { ProblemRoutes } = require('./routes')
+const problemRoutes = new ProblemRoutes(express, problemController)
 
 // Use body parser
 app.use(express.json())
@@ -23,10 +44,8 @@ mongoose.connect(process.env.DATABASE_URL, {
 }).then(console.log('Connected to database'))
   .catch(err => console.log(err))
 
-// Simple route
-app.get('/api/v1/problems', (req, res) => {
-  res.send('Hello World')
-})
+// Use routes
+app.use('/api/v1/problems', problemRoutes.router)
 
 const PORT = process.env.PORT || 5003
 // Listen to port
