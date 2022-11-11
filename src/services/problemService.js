@@ -16,6 +16,19 @@ class ProblemService {
   async getProblemById (id) {
     return await Problem.findById(id)
   }
+
+  async getProblemDataById (id) {
+    const problem = await Problem.findById(id)
+      .populate([
+        { path: 'challenger', select: '_id username' },
+        { path: 'sampleCases', select: '_id input output explanation' },
+        { path: 'testCases', select: '_id input output' }
+      ])
+      .select('_id challenger title description difficulty constraint inputFormat outputFormat sampleCases testCases')
+      .exec()
+
+    return problem
+  }
 }
 
 module.exports = {

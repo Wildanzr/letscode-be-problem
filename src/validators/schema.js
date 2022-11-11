@@ -10,6 +10,10 @@ const createProblemSchema = Joi.object({
   outputFormat: Joi.string().required()
 })
 
+const getProblemSchema = Joi.object({
+  problemId: Joi.string().required()
+})
+
 const createProblemSampleCaseSchema = Joi.object({
   input: Joi.string().required(),
   output: Joi.string().required(),
@@ -32,6 +36,7 @@ const getProblemTestCaseSchema = Joi.object({
 
 module.exports = {
   createProblemSchema,
+  getProblemSchema,
   createProblemSampleCaseSchema,
   createProblemTestCaseSchema,
   getProblemSampleCaseSchema,

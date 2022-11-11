@@ -11,7 +11,7 @@ const testCasesSchema = new Schema({
 })
 
 // Create model
-const TestCase = model('testcases', testCasesSchema)
+const TestCase = model('testCases', testCasesSchema)
 
 module.exports = {
   TestCase,

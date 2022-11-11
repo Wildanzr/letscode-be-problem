@@ -4,6 +4,7 @@ class ProblemRoutes {
     this.router = express.Router()
 
     this.router.post('/', problemController.createProblem)
+    this.router.get('/:problemId', problemController.getProblem)
 
     // Problem sample cases
     this.router.post('/:problemId/sample-cases', problemController.createProblemSampleCase)

@@ -12,6 +12,7 @@ class ProblemController {
 
     // Bind the problem methods
     this.createProblem = this.createProblem.bind(this)
+    this.getProblem = this.getProblem.bind(this)
 
     // Bind the problem sample case methods
     this.createProblemSampleCase = this.createProblemSampleCase.bind(this)
@@ -24,39 +25,6 @@ class ProblemController {
     this.getProblemTestCase = this.getProblemTestCase.bind(this)
     this.deleteProblemTestCase = this.deleteProblemTestCase.bind(this)
     this.updateProblemTestCase = this.updateProblemTestCase.bind(this)
-  }
-
-  async createProblem (req, res) {
-    const token = req.headers.authorization
-    const payload = req.body
-
-    try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
-
-      // Validate payload
-      payload.challenger = _id
-      this._validator.validateCreateProblem(payload)
-
-      // Create problem
-      const problem = await this._problemService.createProblem(payload)
-
-      // Response
-      const response = this._response.success(200, 'Problem created', { problem })
-
-      return res.status(response.statusCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
   }
 
   // Problem Sample Case
@@ -381,6 +349,73 @@ class ProblemController {
 
       // Response
       const response = this._response.success(200, 'Update test case success.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  // Problem
+  async createProblem (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Validate payload
+      payload.challenger = _id
+      this._validator.validateCreateProblem(payload)
+
+      // Create problem
+      const problem = await this._problemService.createProblem(payload)
+
+      // Response
+      const response = this._response.success(200, 'Problem created', { problem })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getProblem (req, res) {
+    const token = req.headers.authorization
+    const { problemId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Validate payload
+      this._validator.validateGetProblem({ problemId })
+
+      // Get problem data
+      const problem = await this._problemService.getProblemDataById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Response
+      const response = this._response.success(200, 'Get problem success.', { problem })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
