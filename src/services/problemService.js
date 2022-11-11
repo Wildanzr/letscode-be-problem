@@ -29,6 +29,10 @@ class ProblemService {
 
     return problem
   }
+
+  async updateProblemById (id, payload) {
+    return await Problem.findByIdAndUpdate(id, payload, { new: true })
+  }
 }
 
 module.exports = {
