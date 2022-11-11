@@ -3,7 +3,7 @@ class ProblemRoutes {
     this.name = 'Problemroutes'
     this.router = express.Router()
 
-    this.router.get('/test', problemController.test)
+    this.router.post('/', problemController.createProblem)
   }
 }
 

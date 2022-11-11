@@ -1,6 +1,6 @@
 const { ClientError } = require('../errors')
 const {
-  testSchema
+  createProblemSchema
 } = require('./schema')
 
 class Validator {
@@ -8,8 +8,8 @@ class Validator {
     this.name = 'Validator'
   }
 
-  validateTest (payload) {
-    const { error } = testSchema.validate(payload)
+  validateCreateProblem (payload) {
+    const { error } = createProblemSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

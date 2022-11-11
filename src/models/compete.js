@@ -13,7 +13,8 @@ const competeSchema = new Schema({
   description: { type: String, required: true },
   isLearnPath: { type: Boolean, default: false },
   problems: [{ type: Schema.Types.String, ref: 'competeProblems' }],
-  leaderboard: [{ type: Schema.Types.String, ref: 'competeLeaderboards' }]
+  leaderboard: [{ type: Schema.Types.String, ref: 'competeLeaderboards' }],
+  languageAllowed: { type: Array, required: true }
 })
 
 // Add index on name

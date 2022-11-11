@@ -1,10 +1,16 @@
+const { User, Problem } = require('../models')
+
 class ProblemService {
   constructor () {
     this.name = 'ProblemService'
   }
 
-  test (payload) {
-    return `Hello ${payload.name} from test`
+  async findUserById (_id) {
+    return await User.findById(_id)
+  }
+
+  async createProblem (payload) {
+    return await Problem.create(payload)
   }
 }
 
