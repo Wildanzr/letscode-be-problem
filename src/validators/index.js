@@ -1,6 +1,10 @@
 const { ClientError } = require('../errors')
 const {
-  createProblemSchema
+  createProblemSchema,
+  createProblemSampleCaseSchema,
+  createProblemTestCaseSchema,
+  getProblemSampleCaseSchema,
+  getProblemTestCaseSchema
 } = require('./schema')
 
 class Validator {
@@ -10,6 +14,26 @@ class Validator {
 
   validateCreateProblem (payload) {
     const { error } = createProblemSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateProblemSampleCase (payload) {
+    const { error } = createProblemSampleCaseSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateProblemTestCase (payload) {
+    const { error } = createProblemTestCaseSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetProblemSampleCase (payload) {
+    const { error } = getProblemSampleCaseSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetProblemTestCase (payload) {
+    const { error } = getProblemTestCaseSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

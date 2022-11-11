@@ -12,6 +12,10 @@ class ProblemService {
   async createProblem (payload) {
     return await Problem.create(payload)
   }
+
+  async getProblemById (id) {
+    return await Problem.findById(id)
+  }
 }
 
 module.exports = {
