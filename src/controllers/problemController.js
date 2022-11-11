@@ -19,6 +19,8 @@ class ProblemController {
     // Bind the problem sample case methods
     this.createProblemSampleCase = this.createProblemSampleCase.bind(this)
     this.getProblemSampleCase = this.getProblemSampleCase.bind(this)
+    this.deleteProblemSampleCase = this.deleteProblemSampleCase.bind(this)
+    this.updateProblemSampleCase = this.updateProblemSampleCase.bind(this)
   }
 
   async createProblem (req, res) {
@@ -122,6 +124,7 @@ class ProblemController {
       this._validator.validateCreateProblemSampleCase(payload)
 
       // Create sample case
+      if (payload.explanation === '') payload.explanation = null
       const sampleCase = await this._sampleCaseService.createSampleCase(payload)
 
       // Insert sample case _id to problem
@@ -169,6 +172,90 @@ class ProblemController {
 
       // Response
       const response = this._response.success(200, 'Get sample case success.', { sampleCase })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async deleteProblemSampleCase (req, res) {
+    const token = req.headers.authorization
+    const { problemId, sampleCaseId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Check problem is exist
+      const problem = await this._problemService.getProblemById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Make sure sampleCaseId is exist in problem.sampleCases
+      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Sample case not found.', 404)
+
+      // Validate payload
+      this._validator.validateGetProblemSampleCase({ sampleCaseId })
+
+      // Delete sample case
+      await this._sampleCaseService.deleteSampleCaseById(sampleCaseId)
+
+      // Remove sample case _id from problem
+      problem.sampleCases = problem.sampleCases.filter(id => id !== sampleCaseId)
+      await problem.save()
+
+      // Response
+      const response = this._response.success(200, 'Delete sample case success.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async updateProblemSampleCase (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+    const { problemId, sampleCaseId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Check problem is exist
+      const problem = await this._problemService.getProblemById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Make sure sampleCaseId is exist in problem.sampleCases
+      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Sample case not found.', 404)
+
+      // Validate payload
+      this._validator.validateCreateProblemSampleCase(payload)
+
+      // Update sample case
+      if (payload.explanation === '') payload.explanation = null
+      await this._sampleCaseService.updateSampleCaseById(sampleCaseId, payload)
+
+      // Response
+      const response = this._response.success(200, 'Update sample case success.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

@@ -9,6 +9,8 @@ class ProblemRoutes {
 
     this.router.post('/:problemId/sample-cases', problemController.createProblemSampleCase)
     this.router.get('/:problemId/sample-cases/:sampleCaseId', problemController.getProblemSampleCase)
+    this.router.put('/:problemId/sample-cases/:sampleCaseId', problemController.updateProblemSampleCase)
+    this.router.delete('/:problemId/sample-cases/:sampleCaseId', problemController.deleteProblemSampleCase)
   }
 }
 
