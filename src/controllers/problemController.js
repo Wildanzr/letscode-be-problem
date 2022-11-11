@@ -13,14 +13,17 @@ class ProblemController {
     // Bind the problem methods
     this.createProblem = this.createProblem.bind(this)
 
-    // Bind the problem test case methods
-    this.createProblemTestCase = this.createProblemTestCase.bind(this)
-
     // Bind the problem sample case methods
     this.createProblemSampleCase = this.createProblemSampleCase.bind(this)
     this.getProblemSampleCase = this.getProblemSampleCase.bind(this)
     this.deleteProblemSampleCase = this.deleteProblemSampleCase.bind(this)
     this.updateProblemSampleCase = this.updateProblemSampleCase.bind(this)
+
+    // Bind the problem test case methods
+    this.createProblemTestCase = this.createProblemTestCase.bind(this)
+    this.getProblemTestCase = this.getProblemTestCase.bind(this)
+    this.deleteProblemTestCase = this.deleteProblemTestCase.bind(this)
+    this.updateProblemTestCase = this.updateProblemTestCase.bind(this)
   }
 
   async createProblem (req, res) {
@@ -48,48 +51,6 @@ class ProblemController {
 
       // Response
       const response = this._response.success(200, 'Problem created', { problem })
-
-      return res.status(response.statusCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
-  }
-
-  // Problem Test Case
-  async createProblemTestCase (req, res) {
-    const token = req.headers.authorization
-    const payload = req.body
-    const { problemId } = req.params
-
-    try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
-
-      // Check problem is exist
-      const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
-
-      // Validate payload
-      this._validator.validateCreateProblemTestCase(payload)
-
-      // Create test case
-      const testCase = await this._testCaseService.createTestCase(payload)
-
-      // Insert test case _id to problem
-      problem.testCases.push(testCase._id)
-      await problem.save()
-
-      // Response
-      const response = this._response.success(200, 'Test case created')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -256,6 +217,170 @@ class ProblemController {
 
       // Response
       const response = this._response.success(200, 'Update sample case success.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  // Problem Test Case
+  async createProblemTestCase (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+    const { problemId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Check problem is exist
+      const problem = await this._problemService.getProblemById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Validate payload
+      this._validator.validateCreateProblemTestCase(payload)
+
+      // Create test case
+      const testCase = await this._testCaseService.createTestCase(payload)
+
+      // Insert test case _id to problem
+      problem.testCases.push(testCase._id)
+      await problem.save()
+
+      // Response
+      const response = this._response.success(200, 'Test case created')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getProblemTestCase (req, res) {
+    const token = req.headers.authorization
+    const { problemId, testCaseId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Check problem is exist
+      const problem = await this._problemService.getProblemById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Make sure testCaseId is exist in problem.testCases
+      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Test case not found.', 404)
+
+      // Validate payload
+      this._validator.validateGetProblemTestCase({ testCaseId })
+
+      // Get test case
+      const testCase = await this._testCaseService.getTestCaseById(testCaseId)
+
+      // Response
+      const response = this._response.success(200, 'Get test case success.', { testCase })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async deleteProblemTestCase (req, res) {
+    const token = req.headers.authorization
+    const { problemId, testCaseId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Check problem is exist
+      const problem = await this._problemService.getProblemById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Make sure testCaseId is exist in problem.testCases
+      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Test case not found.', 404)
+
+      // Validate payload
+      this._validator.validateGetProblemTestCase({ testCaseId })
+
+      // Delete test case
+      await this._testCaseService.deleteTestCaseById(testCaseId)
+
+      // Remove test case _id from problem
+      problem.testCases = problem.testCases.filter(id => id !== testCaseId)
+      await problem.save()
+
+      // Response
+      const response = this._response.success(200, 'Delete test case success.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async updateProblemTestCase (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+    const { problemId, testCaseId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._problemService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Check problem is exist
+      const problem = await this._problemService.getProblemById(problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Make sure testCaseId is exist in problem.testCases
+      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Test case not found.', 404)
+
+      // Validate payload
+      this._validator.validateCreateProblemTestCase(payload)
+
+      // Update test case
+      await this._testCaseService.updateTestCaseById(testCaseId, payload)
+
+      // Response
+      const response = this._response.success(200, 'Update test case success.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
