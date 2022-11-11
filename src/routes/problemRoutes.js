@@ -6,6 +6,7 @@ class ProblemRoutes {
     this.router.post('/', problemController.createProblem)
     this.router.get('/:problemId', problemController.getProblem)
     this.router.put('/:problemId', problemController.updateProblem)
+    this.router.delete('/:problemId', problemController.deleteProblem)
 
     // Problem sample cases
     this.router.post('/:problemId/sample-cases', problemController.createProblemSampleCase)

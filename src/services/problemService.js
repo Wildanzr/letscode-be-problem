@@ -33,6 +33,10 @@ class ProblemService {
   async updateProblemById (id, payload) {
     return await Problem.findByIdAndUpdate(id, payload, { new: true })
   }
+
+  async deleteProblemById (id) {
+    return await Problem.findByIdAndDelete(id)
+  }
 }
 
 module.exports = {
