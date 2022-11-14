@@ -34,7 +34,14 @@ class CompeteController {
         if (payload.start > payload.end) throw new ClientError('Start time must be less than end time.', 400)
       }
 
+      // If start time is null, set it to now and set end time for year 2100
+      if (payload.start === null) {
+        payload.start = new Date()
+        payload.end = new Date(2100, 1, 1)
+      }
+
       // Validate payload
+      payload.challenger = _id
       this._validator.validateCreateCompete(payload)
 
       // Create compete
@@ -53,7 +60,7 @@ class CompeteController {
 
   async getCompetes (req, res) {
     const token = req.headers.authorization
-    const { q, on, page, limit, challengerId, participantId } = req.query
+    const { q, on, isLearnPath, page, limit, challengerId, participantId } = req.query
 
     try {
       // Check token
@@ -68,10 +75,10 @@ class CompeteController {
       if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
       // Validate payload
-      this._validator.validateGetCompetes({ q, on, page, limit, challengerId, participantId })
+      this._validator.validateGetCompetes({ q, on, isLearnPath, page, limit, challengerId, participantId })
 
       // Get competes
-      const { competes, total } = await this._competeService.getCompetes({ q, on, page, limit, challengerId, participantId })
+      const { competes, total } = await this._competeService.getCompetes({ q, on, isLearnPath, page, limit, challengerId, participantId })
 
       // Meta data
       const meta = {

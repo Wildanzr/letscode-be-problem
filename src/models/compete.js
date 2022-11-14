@@ -6,6 +6,7 @@ const competeSchema = new Schema({
     type: String,
     default: () => { return `compete-${nanoid(15)}` }
   },
+  challenger: { type: Schema.Types.String, ref: 'users', default: null },
   name: { type: String, required: true },
   start: { type: Date, default: null },
   end: { type: Date, default: null },
@@ -14,7 +15,8 @@ const competeSchema = new Schema({
   isLearnPath: { type: Boolean, default: false },
   problems: [{ type: Schema.Types.String, ref: 'competeProblems' }],
   leaderboard: [{ type: Schema.Types.String, ref: 'competeLeaderboards' }],
-  languageAllowed: { type: Array, required: true }
+  languageAllowed: { type: Array, required: true },
+  participants: [{ type: Schema.Types.String, ref: 'users' }]
 })
 
 // Add index on name

@@ -36,6 +36,7 @@ const getProblemTestCaseSchema = Joi.object({
 
 const createCompeteSchema = Joi.object({
   name: Joi.string().required(),
+  challenger: Joi.string().required(),
   description: Joi.string().required(),
   // languageAllowed is an array of integer
   languageAllowed: Joi.array().items(Joi.number()).required(),
