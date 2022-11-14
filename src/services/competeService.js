@@ -105,6 +105,10 @@ class CompeteService {
   async updateCompete (_id, payload) {
     return await Compete.findByIdAndUpdate(_id, payload, { new: true })
   }
+
+  async deleteCompete (_id) {
+    return await Compete.findByIdAndDelete(_id)
+  }
 }
 
 module.exports = {

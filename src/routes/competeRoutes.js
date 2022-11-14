@@ -7,6 +7,7 @@ class CompeteRoutes {
     this.router.get('/', competeController.getCompetes)
     this.router.get('/:competeId', competeController.getCompete)
     this.router.put('/:competeId', competeController.updateCompete)
+    this.router.delete('/:competeId', competeController.deleteCompete)
   }
 }
 
