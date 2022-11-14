@@ -12,6 +12,7 @@ class CompeteController {
     this.createCompete = this.createCompete.bind(this)
     this.getCompetes = this.getCompetes.bind(this)
     this.getCompete = this.getCompete.bind(this)
+    this.updateCompete = this.updateCompete.bind(this)
   }
 
   async createCompete (req, res) {
@@ -121,6 +122,58 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Get compete successfully.', { compete })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async updateCompete (req, res) {
+    const token = req.headers.authorization
+    const { competeId } = req.params
+    const payload = req.body
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._competeService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Get compete by id
+      const compete = await this._competeService.findCompeteById(competeId)
+      if (!compete) throw new ClientError('Compete not found.', 404)
+
+      // Make sure user is the owner of the compete
+      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+
+      if (payload.start !== null || payload.end !== null) {
+        // Check if start time is greater than end time
+        if (payload.start > payload.end) throw new ClientError('Start time must be less than end time.', 400)
+      }
+
+      // If start time is null, set it to now and set end time for year 2100
+      if (payload.start === null) {
+        payload.start = new Date()
+        payload.end = new Date(2100, 1, 1)
+      }
+
+      // Validate payload
+      payload.challenger = _id
+      this._validator.validateCreateCompete(payload)
+
+      // Update compete
+      const updatedCompete = await this._competeService.updateCompete(competeId, payload)
+
+      // Response
+      const response = this._response.success(200, 'Update compete successfully.', { compete: updatedCompete })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
