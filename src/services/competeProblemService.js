@@ -1,13 +1,9 @@
 // const { ClientError } = require('../errors')
-const { CompeteProblem, Problem } = require('../models')
+const { CompeteProblem } = require('../models')
 
 class CompeteProblemService {
   constructor () {
     this.name = 'CompeteProblemService'
-  }
-
-  async findProblemById (_id) {
-    return await Problem.findById(_id)
   }
 
   async findCompeteProblemById (_id) {
@@ -20,6 +16,10 @@ class CompeteProblemService {
 
   async updateCompeteProblem (_id, payload) {
     return await CompeteProblem.findByIdAndUpdate(_id, payload, { new: true })
+  }
+
+  async deleteCompeteProblem (_id) {
+    return await CompeteProblem.findByIdAndDelete(_id)
   }
 }
 

@@ -3,5 +3,6 @@ module.exports = {
   ...require('./sampleCaseService'),
   ...require('./testCaseService'),
   ...require('./competeService'),
-  ...require('./competeProblemService')
+  ...require('./competeProblemService'),
+  ...require('./userService')
 }

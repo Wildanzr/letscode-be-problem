@@ -1,10 +1,14 @@
 const { ClientError } = require('../errors')
 
 class CompeteController {
-  constructor (competeService, competeProblemService, validator, response, tokenize) {
+  constructor (competeService, competeProblemService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize) {
     this.name = 'CompeteController'
     this._competeService = competeService
     this._competeProblemService = competeProblemService
+    this._problemService = problemService
+    this._testCaseService = testCaseService
+    this._sampleCaseService = sampleCaseService
+    this._userService = userService
     this._validator = validator
     this._response = response
     this._tokenize = tokenize
@@ -18,6 +22,7 @@ class CompeteController {
 
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
     this.updateCompeteProblem = this.updateCompeteProblem.bind(this)
+    this.deleteCompeteProblem = this.deleteCompeteProblem.bind(this)
   }
 
   // Competes
@@ -33,7 +38,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
       if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
@@ -78,7 +83,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
 
       // Validate payload
@@ -117,7 +122,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
 
       // Validate payload
@@ -149,7 +154,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
       if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
@@ -200,7 +205,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
       if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
@@ -243,7 +248,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
       if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
@@ -252,10 +257,10 @@ class CompeteController {
       if (!compete) throw new ClientError('Compete not found.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Unauthorize to create problem compete in this compete.', 401)
 
       // Check if problem exists
-      const problem = await this._competeProblemService.findProblemById(payload.problemId)
+      const problem = await this._problemService.findProblemById(payload.problemId)
       if (!problem) throw new ClientError('Problem not found.', 404)
 
       // Validate payload
@@ -292,7 +297,7 @@ class CompeteController {
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
-      const user = await this._competeService.findUserById(_id)
+      const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
       if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
@@ -301,7 +306,7 @@ class CompeteController {
       if (!compete) throw new ClientError('Compete not found.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this problem compete.', 401)
 
       // Check if problem exists
       const problem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
@@ -320,6 +325,65 @@ class CompeteController {
     } catch (error) {
       console.log(error)
       return this._response.error(res, error)
+    }
+  }
+
+  async deleteCompeteProblem (req, res) {
+    const token = req.headers.authorization
+    const { competeId, competeProblemId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Get compete by id
+      const compete = await this._competeService.findCompeteById(competeId)
+      if (!compete) throw new ClientError('Compete not found.', 404)
+
+      // Make sure user is the owner of the compete
+      if (compete.challenger !== _id) throw new ClientError('Unauthorize to delete this problem compete.', 401)
+
+      // Check if compete problem exists
+      const competeProblem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
+      if (!competeProblem) throw new ClientError('Compete problem not found.', 404)
+
+      // Get problem
+      const problem = await this._problemService.getProblemById(competeProblem.problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Iterate problem test cases, then delete it
+      for (const testCaseId of problem.testCases) {
+        await this._testCaseService.deleteTestCaseById(testCaseId)
+      }
+
+      // Iterate problem sample cases, then delete it
+      for (const sampleCaseId of problem.sampleCases) {
+        await this._sampleCaseService.deleteSampleCaseById(sampleCaseId)
+      }
+
+      // Delete compete problem
+      await this._competeProblemService.deleteCompeteProblem(competeProblemId)
+
+      // Remove compete problem from compete
+      const index = compete.problems.indexOf(competeProblemId)
+      compete.problems.splice(index, 1)
+      await compete.save()
+
+      // Response
+      const response = this._response.success(200, 'Delete compete problem successfully.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      this._response.error(res, error)
     }
   }
 }

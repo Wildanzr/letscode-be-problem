@@ -1,13 +1,9 @@
-const { Compete, User } = require('../models')
+const { Compete } = require('../models')
 const { ClientError } = require('../errors')
 
 class CompeteService {
   constructor () {
     this.name = 'CompeteService'
-  }
-
-  async findUserById (_id) {
-    return await User.findById(_id)
   }
 
   async findCompeteById (_id) {

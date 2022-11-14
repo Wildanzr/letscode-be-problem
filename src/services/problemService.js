@@ -9,6 +9,10 @@ class ProblemService {
     return await User.findById(_id)
   }
 
+  async findProblemById (_id) {
+    return await Problem.findById(_id)
+  }
+
   async createProblem (payload) {
     return await Problem.create(payload)
   }
