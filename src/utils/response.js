@@ -3,13 +3,21 @@ class Response {
     this.name = 'response'
   }
 
-  success (statusCode, message, data) {
-    if (data) {
+  success (statusCode, message, data, meta) {
+    if (meta) {
       return {
         status: true,
         message,
-        statusCode,
-        data
+        meta,
+        data,
+        statusCode
+      }
+    } else if (data) {
+      return {
+        status: true,
+        message,
+        data,
+        statusCode
       }
     } else {
       return {

@@ -44,6 +44,16 @@ const createCompeteSchema = Joi.object({
   isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
 })
 
+const getCompetesSchema = Joi.object({
+  page: Joi.number().min(1).required(),
+  limit: Joi.number().min(1).required(),
+  isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
+  on: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
+  q: Joi.string().allow(''),
+  participantId: Joi.string().allow(''),
+  challengerId: Joi.string().allow('')
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -51,5 +61,6 @@ module.exports = {
   createProblemTestCaseSchema,
   getProblemSampleCaseSchema,
   getProblemTestCaseSchema,
-  createCompeteSchema
+  createCompeteSchema,
+  getCompetesSchema
 }

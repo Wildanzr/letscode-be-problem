@@ -4,6 +4,7 @@ class CompeteRoutes {
     this.router = express.Router()
 
     this.router.post('/', competeController.createCompete)
+    this.router.get('/', competeController.getCompetes)
   }
 }
 
