@@ -5,6 +5,7 @@ class CompeteRoutes {
 
     this.router.post('/', competeController.createCompete)
     this.router.get('/', competeController.getCompetes)
+    this.router.get('/:competeId', competeController.getCompete)
   }
 }
 

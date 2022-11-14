@@ -1,4 +1,5 @@
 const { Compete, User } = require('../models')
+const { ClientError } = require('../errors')
 
 class CompeteService {
   constructor () {
@@ -58,6 +59,20 @@ class CompeteService {
     })
 
     return { competes, total }
+  }
+
+  async getCompete (_id) {
+    const compete = await Compete.findById(_id)
+      .populate([
+        { path: 'participants', select: '_id username avatar' },
+        { path: 'challenger', select: '_id username avatar' }
+      ])
+      .select('_id name start end description isLearnPath problems leaderboard languageAllowed participants key')
+      .exec()
+
+    if (!compete) throw new ClientError('Compete not found.', 404)
+
+    return compete
   }
 }
 

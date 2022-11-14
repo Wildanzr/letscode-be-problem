@@ -55,6 +55,10 @@ const getCompetesSchema = Joi.object({
   challengerId: Joi.string().allow('')
 })
 
+const getCompeteSchema = Joi.object({
+  competeId: Joi.string().required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -63,5 +67,6 @@ module.exports = {
   getProblemSampleCaseSchema,
   getProblemTestCaseSchema,
   createCompeteSchema,
-  getCompetesSchema
+  getCompetesSchema,
+  getCompeteSchema
 }
