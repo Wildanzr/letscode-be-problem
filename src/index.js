@@ -11,10 +11,11 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 // Services
-const { ProblemService, SampleCaseService, TestCaseService } = require('./services')
+const { ProblemService, SampleCaseService, TestCaseService, CompeteService } = require('./services')
 const problemService = new ProblemService()
 const sampleCaseService = new SampleCaseService()
 const testCaseService = new TestCaseService()
+const competeService = new CompeteService()
 
 // Utils
 const { Response, Tokenize } = require('./utils')
@@ -26,12 +27,14 @@ const { Validator } = require('./validators')
 const validator = new Validator()
 
 // Controllers
-const { ProblemController } = require('./controllers')
+const { ProblemController, CompeteController } = require('./controllers')
 const problemController = new ProblemController(problemService, sampleCaseService, testCaseService, validator, response, tokenize)
+const competeController = new CompeteController(competeService, validator, response, tokenize)
 
 // Routes
-const { ProblemRoutes } = require('./routes')
+const { ProblemRoutes, CompeteRoutes } = require('./routes')
 const problemRoutes = new ProblemRoutes(express, problemController)
+const competeRoutes = new CompeteRoutes(express, competeController)
 
 // Use body parser
 app.use(express.json())
@@ -48,6 +51,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 // Use routes
 app.use('/api/v1/problems', problemRoutes.router)
+app.use('/api/v1/competes', competeRoutes.router)
 
 const PORT = process.env.PORT || 5003
 // Listen to port

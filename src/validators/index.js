@@ -5,7 +5,8 @@ const {
   createProblemSampleCaseSchema,
   createProblemTestCaseSchema,
   getProblemSampleCaseSchema,
-  getProblemTestCaseSchema
+  getProblemTestCaseSchema,
+  createCompeteSchema
 } = require('./schema')
 
 class Validator {
@@ -40,6 +41,11 @@ class Validator {
 
   validateGetProblemTestCase (payload) {
     const { error } = getProblemTestCaseSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateCompete (payload) {
+    const { error } = createCompeteSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

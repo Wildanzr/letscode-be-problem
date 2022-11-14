@@ -34,11 +34,22 @@ const getProblemTestCaseSchema = Joi.object({
   testCaseId: Joi.string().required()
 })
 
+const createCompeteSchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  // languageAllowed is an array of integer
+  languageAllowed: Joi.array().items(Joi.number()).required(),
+  start: Joi.date().allow(null),
+  end: Joi.date().allow(null),
+  isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
   createProblemSampleCaseSchema,
   createProblemTestCaseSchema,
   getProblemSampleCaseSchema,
-  getProblemTestCaseSchema
+  getProblemTestCaseSchema,
+  createCompeteSchema
 }

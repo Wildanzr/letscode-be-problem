@@ -7,9 +7,9 @@ const competeSchema = new Schema({
     default: () => { return `compete-${nanoid(15)}` }
   },
   name: { type: String, required: true },
-  start: { type: Date, required: true },
-  end: { type: Date, required: true },
-  cover: { type: String, required: true },
+  start: { type: Date, default: null },
+  end: { type: Date, default: null },
+  key: { type: String, default: () => { return nanoid(5) }, unique: true },
   description: { type: String, required: true },
   isLearnPath: { type: Boolean, default: false },
   problems: [{ type: Schema.Types.String, ref: 'competeProblems' }],
