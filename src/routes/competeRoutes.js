@@ -8,6 +8,9 @@ class CompeteRoutes {
     this.router.get('/:competeId', competeController.getCompete)
     this.router.put('/:competeId', competeController.updateCompete)
     this.router.delete('/:competeId', competeController.deleteCompete)
+
+    this.router.post('/:competeId/problems', competeController.createCompeteProblem)
+    this.router.put('/:competeId/problems/:competeProblemId', competeController.updateCompeteProblem)
   }
 }
 

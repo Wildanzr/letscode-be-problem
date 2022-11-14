@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 
 class CompeteController {
-  constructor (competeService, validator, response, tokenize) {
+  constructor (competeService, competeProblemService, validator, response, tokenize) {
     this.name = 'CompeteController'
     this._competeService = competeService
+    this._competeProblemService = competeProblemService
     this._validator = validator
     this._response = response
     this._tokenize = tokenize
@@ -14,6 +15,9 @@ class CompeteController {
     this.getCompete = this.getCompete.bind(this)
     this.updateCompete = this.updateCompete.bind(this)
     this.deleteCompete = this.deleteCompete.bind(this)
+
+    this.createCompeteProblem = this.createCompeteProblem.bind(this)
+    this.updateCompeteProblem = this.updateCompeteProblem.bind(this)
   }
 
   // Competes
@@ -217,6 +221,100 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Delete compete successfully.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  // Compete Problem
+  async createCompeteProblem (req, res) {
+    const token = req.headers.authorization
+    const { competeId } = req.params
+    const payload = req.body
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._competeService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Get compete by id
+      const compete = await this._competeService.findCompeteById(competeId)
+      if (!compete) throw new ClientError('Compete not found.', 404)
+
+      // Make sure user is the owner of the compete
+      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+
+      // Check if problem exists
+      const problem = await this._competeProblemService.findProblemById(payload.problemId)
+      if (!problem) throw new ClientError('Problem not found.', 404)
+
+      // Validate payload
+      payload.competeId = competeId
+      this._validator.validateCreateCompeteProblem(payload)
+
+      // Create compete problem
+      const competeProblem = await this._competeProblemService.createCompeteProblem(payload)
+
+      // Insert compete problem to compete
+      compete.problems.push(competeProblem._id)
+      await compete.save()
+
+      // Response
+      const response = this._response.success(200, 'Create compete problem successfully.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async updateCompeteProblem (req, res) {
+    const token = req.headers.authorization
+    const { competeId, competeProblemId } = req.params
+    const payload = req.body
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._competeService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Get compete by id
+      const compete = await this._competeService.findCompeteById(competeId)
+      if (!compete) throw new ClientError('Compete not found.', 404)
+
+      // Make sure user is the owner of the compete
+      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+
+      // Check if problem exists
+      const problem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
+      if (!problem) throw new ClientError('Compete problem not found.', 404)
+
+      // Validate payload
+      this._validator.validateUpdateCompeteProblem(payload)
+
+      // Update compete problem
+      await this._competeProblemService.updateCompeteProblem(competeProblemId, payload)
+
+      // Response
+      const response = this._response.success(200, 'Update compete problem successfully.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

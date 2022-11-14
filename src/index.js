@@ -11,11 +11,12 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 // Services
-const { ProblemService, SampleCaseService, TestCaseService, CompeteService } = require('./services')
+const { ProblemService, SampleCaseService, TestCaseService, CompeteService, CompeteProblemService } = require('./services')
 const problemService = new ProblemService()
 const sampleCaseService = new SampleCaseService()
 const testCaseService = new TestCaseService()
 const competeService = new CompeteService()
+const competeProblemService = new CompeteProblemService()
 
 // Utils
 const { Response, Tokenize } = require('./utils')
@@ -29,7 +30,7 @@ const validator = new Validator()
 // Controllers
 const { ProblemController, CompeteController } = require('./controllers')
 const problemController = new ProblemController(problemService, sampleCaseService, testCaseService, validator, response, tokenize)
-const competeController = new CompeteController(competeService, validator, response, tokenize)
+const competeController = new CompeteController(competeService, competeProblemService, validator, response, tokenize)
 
 // Routes
 const { ProblemRoutes, CompeteRoutes } = require('./routes')

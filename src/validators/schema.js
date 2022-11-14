@@ -59,6 +59,16 @@ const getCompeteSchema = Joi.object({
   competeId: Joi.string().required()
 })
 
+const createCompeteProblem = Joi.object({
+  competeId: Joi.string().required(),
+  problemId: Joi.string().required(),
+  maxPoint: Joi.number().min(1).max(100).required()
+})
+
+const updateCompeteProblem = Joi.object({
+  maxPoint: Joi.number().min(1).max(100).required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -68,5 +78,7 @@ module.exports = {
   getProblemTestCaseSchema,
   createCompeteSchema,
   getCompetesSchema,
-  getCompeteSchema
+  getCompeteSchema,
+  createCompeteProblem,
+  updateCompeteProblem
 }
