@@ -7,7 +7,7 @@ const problemSchema = new Schema({
     default: () => { return `pbl-${nanoid(15)}` }
   },
   challenger: { type: Schema.Types.String, ref: 'users' },
-  title: { type: String, required: true, unique: true, minlength: 3 },
+  title: { type: String, required: true, minlength: 3 },
   description: { type: String, required: true },
   difficulty: { type: Number, required: true },
   constraint: { type: String, required: true },

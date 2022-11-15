@@ -105,6 +105,19 @@ class CompeteService {
   async deleteCompete (_id) {
     return await Compete.findByIdAndDelete(_id)
   }
+
+  async getCompeteProblems (_id) {
+    const compete = await Compete.findById(_id)
+      .populate([
+        { path: 'problems', select: 'problemId', populate: { path: 'problemId', select: '_id title difficulty' } }
+      ])
+      .select('problems')
+      .exec()
+
+    if (!compete) throw new ClientError('Compete not found.', 404)
+
+    return compete
+  }
 }
 
 module.exports = {
