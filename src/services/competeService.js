@@ -109,7 +109,7 @@ class CompeteService {
   async getCompeteProblems (_id) {
     const compete = await Compete.findById(_id)
       .populate([
-        { path: 'problems', select: 'problemId', populate: { path: 'problemId', select: '_id title difficulty' } }
+        { path: 'problems', select: 'problemId maxPoint', populate: { path: 'problemId', select: '_id title difficulty' } }
       ])
       .select('problems')
       .exec()

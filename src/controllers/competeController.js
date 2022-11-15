@@ -220,7 +220,33 @@ class CompeteController {
       // Validate payload
       this._validator.validateGetCompete({ competeId })
 
-      // TODO: iterate problems and delete it
+      const competeProblems = compete.problems
+
+      // Delete compete problems, problem, sample case, and test case
+      for (const cp of competeProblems) {
+        const competeProblem = await this._competeProblemService.findCompeteProblemById(cp)
+        if (!competeProblem) throw new ClientError('Compete problem not found.', 404)
+        const { problemId } = competeProblem
+
+        const problem = await this._problemService.getProblemById(problemId)
+        if (!problem) throw new ClientError('Problem not found.', 404)
+
+        // Iterate problem test cases, then delete it
+        for (const testCaseId of problem.testCases) {
+          await this._testCaseService.deleteTestCaseById(testCaseId)
+        }
+
+        // Iterate problem sample cases, then delete it
+        for (const sampleCaseId of problem.sampleCases) {
+          await this._sampleCaseService.deleteSampleCaseById(sampleCaseId)
+        }
+
+        // Delete compete problem
+        await competeProblem.remove()
+
+        // Delete problem
+        await problem.remove()
+      }
 
       // Delete compete
       await this._competeService.deleteCompete(competeId)
