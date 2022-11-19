@@ -56,6 +56,7 @@ class ProblemController {
 
       // Create sample case
       if (payload.explanation === '') payload.explanation = null
+      if (payload.input === '') payload.input = null
       const sampleCase = await this._sampleCaseService.createSampleCase(payload)
 
       // Insert sample case _id to problem
@@ -179,10 +180,11 @@ class ProblemController {
       if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Sample case not found.', 404)
 
       // Validate payload
+      if (payload.explanation === '') payload.explanation = null
+      if (payload.input === '') payload.input = null
       this._validator.validateCreateProblemSampleCase(payload)
 
       // Update sample case
-      if (payload.explanation === '') payload.explanation = null
       await this._sampleCaseService.updateSampleCaseById(sampleCaseId, payload)
 
       // Response

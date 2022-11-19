@@ -21,6 +21,7 @@ class CompeteController {
     this.deleteCompete = this.deleteCompete.bind(this)
     this.getCompeteProblems = this.getCompeteProblems.bind(this)
 
+    this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
     this.updateCompeteProblem = this.updateCompeteProblem.bind(this)
     this.deleteCompeteProblem = this.deleteCompeteProblem.bind(this)
@@ -293,6 +294,37 @@ class CompeteController {
   }
 
   // Compete Problem
+  async getCompeteProblem (req, res) {
+    const token = req.headers.authorization
+    const { competeProblemId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+
+      // Validate payload
+      this._validator.validateGetCompeteProblem({ competeProblemId })
+
+      // Get compete problem
+      const competeProblem = await this._competeProblemService.getCompeteProblemDetail(competeProblemId)
+
+      // Response
+      const response = this._response.success(200, 'Get compete problem successfully.', { competeProblem })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
   async createCompeteProblem (req, res) {
     const token = req.headers.authorization
     const { competeId } = req.params

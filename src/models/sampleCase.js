@@ -6,7 +6,7 @@ const sampleCasesSchema = new Schema({
     type: String,
     default: () => { return `sc-${nanoid(15)}` }
   },
-  input: { type: String, required: true },
+  input: { type: String, default: null },
   output: { type: String, required: true },
   explanation: { type: String, default: null }
 })

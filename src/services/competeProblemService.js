@@ -1,4 +1,4 @@
-// const { ClientError } = require('../errors')
+const { ClientError } = require('../errors')
 const { CompeteProblem } = require('../models')
 
 class CompeteProblemService {
@@ -20,6 +20,25 @@ class CompeteProblemService {
 
   async deleteCompeteProblem (_id) {
     return await CompeteProblem.findByIdAndDelete(_id)
+  }
+
+  async getCompeteProblemDetail (_id) {
+    const competeProblem = await CompeteProblem.findById(_id)
+      .populate([
+        {
+          path: 'problemId',
+          select: '_id challenger title description constraint inputFormat outputFormat',
+          populate: [
+            { path: 'challenger', select: '_id username' },
+            { path: 'sampleCases', select: '_id input output explanation' },
+            { path: 'testCases', select: '_id input output' }
+          ]
+        }
+      ])
+
+    if (!competeProblem) throw new ClientError('Compete problem not found', 404)
+
+    return competeProblem
   }
 }
 

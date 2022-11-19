@@ -15,15 +15,15 @@ const getProblemSchema = Joi.object({
 })
 
 const createProblemSampleCaseSchema = Joi.object({
-  input: Joi.string().required(),
+  input: Joi.string().allow(''),
   output: Joi.string().required(),
-  explanation: Joi.string().allow('')
+  explanation: Joi.string().allow('' || null)
 })
 
 const createProblemTestCaseSchema = Joi.object({
-  input: Joi.string().required(),
+  input: Joi.string().allow(''),
   output: Joi.string().required(),
-  explanation: Joi.string().allow('')
+  explanation: Joi.string().allow('' || null)
 })
 
 const getProblemSampleCaseSchema = Joi.object({
@@ -59,14 +59,18 @@ const getCompeteSchema = Joi.object({
   competeId: Joi.string().required()
 })
 
-const createCompeteProblem = Joi.object({
+const createCompeteProblemSchema = Joi.object({
   competeId: Joi.string().required(),
   problemId: Joi.string().required(),
   maxPoint: Joi.number().min(1).max(100).required()
 })
 
-const updateCompeteProblem = Joi.object({
+const updateCompeteProblemSchema = Joi.object({
   maxPoint: Joi.number().min(1).max(100).required()
+})
+
+const getCompeteProblemSchema = Joi.object({
+  competeProblemId: Joi.string().required()
 })
 
 module.exports = {
@@ -79,6 +83,7 @@ module.exports = {
   createCompeteSchema,
   getCompetesSchema,
   getCompeteSchema,
-  createCompeteProblem,
-  updateCompeteProblem
+  createCompeteProblemSchema,
+  updateCompeteProblemSchema,
+  getCompeteProblemSchema
 }

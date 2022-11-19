@@ -6,7 +6,7 @@ const testCasesSchema = new Schema({
     type: String,
     default: () => { return `tc-${nanoid(15)}` }
   },
-  input: { type: String, required: true },
+  input: { type: String, default: null },
   output: { type: String, required: true }
 })
 
