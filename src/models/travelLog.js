@@ -1,20 +1,20 @@
 const { model, Schema } = require('mongoose')
 const { nanoid } = require('nanoid')
 
-const logSchema = new Schema({
+const travelLogSchema = new Schema({
   _id: {
     type: String,
-    default: () => { return `log-${nanoid(15)}` }
+    default: () => { return `tlog-${nanoid(15)}` }
   },
   userId: { type: Schema.Types.String, ref: 'users' },
-  submissionId: { type: Schema.Types.String, ref: 'submissions' },
+  path: { type: String, required: true },
   at: { type: Date, default: () => { return new Date() } }
 })
 
 // Create model
-const Log = model('logs', logSchema)
+const TravelLog = model('travelLogs', travelLogSchema)
 
 module.exports = {
-  Log,
-  logSchema
+  TravelLog,
+  travelLogSchema
 }

@@ -9,5 +9,6 @@ module.exports = {
   ...require('./sampleCase'),
   ...require('./submission'),
   ...require('./testCase'),
-  ...require('./user')
+  ...require('./user'),
+  ...require('./travelLog')
 }

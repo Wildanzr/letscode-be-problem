@@ -74,21 +74,9 @@ class ProblemController {
   }
 
   async getProblemSampleCase (req, res) {
-    const token = req.headers.authorization
     const { problemId, sampleCaseId } = req.params
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
-
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
       if (!problem) throw new ClientError('Problem not found.', 404)
@@ -240,21 +228,9 @@ class ProblemController {
   }
 
   async getProblemTestCase (req, res) {
-    const token = req.headers.authorization
     const { problemId, testCaseId } = req.params
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
-
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
       if (!problem) throw new ClientError('Problem not found.', 404)
@@ -396,21 +372,9 @@ class ProblemController {
   }
 
   async getProblem (req, res) {
-    const token = req.headers.authorization
     const { problemId } = req.params
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
-
       // Validate payload
       this._validator.validateGetProblem({ problemId })
 

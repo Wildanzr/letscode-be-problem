@@ -13,6 +13,7 @@ const competeSchema = new Schema({
   key: { type: String, default: () => { return nanoid(5) }, unique: true },
   description: { type: String, required: true },
   isLearnPath: { type: Boolean, default: false },
+  isChallenge: { type: Boolean, default: false },
   problems: [{ type: Schema.Types.String, ref: 'competeProblems' }],
   leaderboard: [{ type: Schema.Types.String, ref: 'competeLeaderboards' }],
   languageAllowed: { type: Array, required: true },

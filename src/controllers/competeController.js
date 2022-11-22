@@ -74,20 +74,9 @@ class CompeteController {
   }
 
   async getCompetes (req, res) {
-    const token = req.headers.authorization
     const { q, on, isLearnPath, page, limit, challengerId, participantId } = req.query
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-
       // Validate payload
       this._validator.validateGetCompetes({ q, on, isLearnPath, page, limit, challengerId, participantId })
 
@@ -113,20 +102,9 @@ class CompeteController {
   }
 
   async getCompete (req, res) {
-    const token = req.headers.authorization
     const { competeId } = req.params
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-
       // Validate payload
       this._validator.validateGetCompete({ competeId })
 
@@ -263,20 +241,9 @@ class CompeteController {
   }
 
   async getCompeteProblems (req, res) {
-    const token = req.headers.authorization
     const { competeId } = req.params
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-
       // Validate payload
       this._validator.validateGetCompete({ competeId })
 
@@ -295,20 +262,9 @@ class CompeteController {
 
   // Compete Problem
   async getCompeteProblem (req, res) {
-    const token = req.headers.authorization
     const { competeProblemId } = req.params
 
     try {
-      // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
-
-      // Verify token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Check user _id
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-
       // Validate payload
       this._validator.validateGetCompeteProblem({ competeProblemId })
 

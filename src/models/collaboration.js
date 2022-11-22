@@ -10,7 +10,8 @@ const collaborationSchema = new Schema({
   problemId: { type: Schema.Types.String, ref: 'problems' },
   codeId: { type: String, required: true },
   driver: { type: Schema.Types.String, ref: 'users' },
-  navigator: [{ type: Schema.Types.String, ref: 'users' }]
+  navigator: { type: Schema.Types.String, ref: 'users' },
+  participants: [{ type: Schema.Types.String, ref: 'users' }]
 })
 
 // Create model
