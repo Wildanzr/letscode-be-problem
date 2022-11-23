@@ -42,13 +42,15 @@ const createCompeteSchema = Joi.object({
   languageAllowed: Joi.array().items(Joi.number()).required(),
   start: Joi.date().allow(null),
   end: Joi.date().allow(null),
-  isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
+  isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
+  isChallenge: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
 })
 
 const getCompetesSchema = Joi.object({
   page: Joi.number().min(1).required(),
   limit: Joi.number().min(1).required(),
   isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
+  isChallenge: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
   on: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
   q: Joi.string().allow(''),
   participantId: Joi.string().allow(''),

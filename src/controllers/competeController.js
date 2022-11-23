@@ -74,14 +74,14 @@ class CompeteController {
   }
 
   async getCompetes (req, res) {
-    const { q, on, isLearnPath, page, limit, challengerId, participantId } = req.query
+    const { q, on, isLearnPath, isChallenge, page, limit, challengerId, participantId } = req.query
 
     try {
       // Validate payload
-      this._validator.validateGetCompetes({ q, on, isLearnPath, page, limit, challengerId, participantId })
+      this._validator.validateGetCompetes({ q, on, isLearnPath, isChallenge, page, limit, challengerId, participantId })
 
       // Get competes
-      const { competes, total } = await this._competeService.getCompetes({ q, on, isLearnPath, page, limit, challengerId, participantId })
+      const { competes, total } = await this._competeService.getCompetes({ q, on, isLearnPath, isChallenge, page, limit, challengerId, participantId })
 
       // Meta data
       const meta = {

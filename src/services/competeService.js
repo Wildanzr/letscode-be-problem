@@ -19,7 +19,7 @@ class CompeteService {
   }
 
   async getCompetes (query) {
-    let { q, on, isLearnPath, page, limit, challengerId, participantId } =
+    let { q, on, isLearnPath, isChallenge, page, limit, challengerId, participantId } =
       query
 
     if (q === '' || q === undefined) q = ''
@@ -41,6 +41,20 @@ class CompeteService {
     ) { isLearnPath = true } else isLearnPath = true
 
     if (
+      isChallenge === 'false' ||
+      isChallenge === 'no' ||
+      isChallenge === 0 ||
+      isChallenge === '0' ||
+      isChallenge === '' ||
+      isChallenge === undefined
+    ) { isChallenge = false } else if (
+      isChallenge === 'true' ||
+      isChallenge === 'yes' ||
+      isChallenge === 1 ||
+      isChallenge === '1'
+    ) { isChallenge = true } else isChallenge = true
+
+    if (
       on === 'true' ||
       on === 'yes' ||
       on === 1 ||
@@ -56,7 +70,8 @@ class CompeteService {
         participantId === '' ? { $exists: true } : { $in: [participantId] },
       challenger: challengerId === '' ? { $exists: true } : challengerId,
       end: on ? { $gte: new Date() } : { $lte: new Date() },
-      isLearnPath
+      isLearnPath,
+      isChallenge
     })
       .skip((page - 1) * limit)
       .limit(limit)
@@ -76,7 +91,8 @@ class CompeteService {
         participantId === '' ? { $exists: true } : { $in: [participantId] },
       challenger: challengerId === '' ? { $exists: true } : challengerId,
       end: on ? { $gte: new Date() } : { $lte: new Date() },
-      isLearnPath
+      isLearnPath,
+      isChallenge
     })
 
     return { competes, total }
