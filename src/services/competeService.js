@@ -125,7 +125,14 @@ class CompeteService {
   async getCompeteProblems (_id) {
     const compete = await Compete.findById(_id)
       .populate([
-        { path: 'problems', select: 'problemId maxPoint', populate: { path: 'problemId', select: '_id title difficulty' } }
+        {
+          path: 'problems',
+          select: 'problemId maxPoint',
+          populate: {
+            path: 'problemId',
+            select: '_id title difficulty'
+          }
+        }
       ])
       .select('problems')
       .exec()
@@ -133,6 +140,45 @@ class CompeteService {
     if (!compete) throw new ClientError('Compete not found.', 404)
 
     return compete
+  }
+
+  async searchCompeteProblems (_id, query) {
+    const { q, page, limit } = query
+
+    const compete = await Compete.findById(_id)
+      .populate([
+        {
+          path: 'problems',
+          select: 'problemId maxPoint',
+          populate: {
+            path: 'problemId',
+            select: '_id title difficulty',
+            match: { title: { $regex: q, $options: 'i' } }
+          }
+        }
+      ])
+      .select('problems')
+      .exec()
+
+    if (!compete) throw new ClientError('Compete not found.', 404)
+
+    // Filter based on query
+    let problems = compete.problems
+      .filter(problem => problem.problemId !== null)
+
+    // Count total
+    const total = problems.length
+
+    // Paginate
+    if (total > limit) {
+      problems = problems
+        .slice((page - 1) * limit, page * limit)
+    }
+
+    // Assing problems to compete
+    compete.problems = problems
+
+    return { compete, total }
   }
 }
 

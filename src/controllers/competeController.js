@@ -20,6 +20,7 @@ class CompeteController {
     this.updateCompete = this.updateCompete.bind(this)
     this.deleteCompete = this.deleteCompete.bind(this)
     this.getCompeteProblems = this.getCompeteProblems.bind(this)
+    this.searchCompeteProblems = this.searchCompeteProblems.bind(this)
 
     this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
@@ -252,6 +253,39 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Get compete problems successfully.', problems)
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async searchCompeteProblems (req, res) {
+    const { competeId } = req.params
+    let { q, page, limit } = req.query
+
+    if (q === undefined || q === null || q === '') q = ''
+    if (page === undefined || page === null || page === '') page = 1
+    if (limit === undefined || limit === null || limit === '') limit = 10
+
+    try {
+      // Validate payload
+      this._validator.validateGetCompete({ competeId })
+
+      // Get compete problems
+      const { compete, total } = await this._competeService.searchCompeteProblems(competeId, { q, page, limit })
+
+      // Meta data
+      const meta = {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPage: Math.ceil(total / limit)
+      }
+
+      // Response
+      const response = this._response.success(200, 'Search compete problems successfully.', compete, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
