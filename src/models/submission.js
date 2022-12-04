@@ -8,7 +8,8 @@ const submissionSchema = new Schema({
   },
   code: { type: String, required: true },
   languageCode: { type: Number, required: true },
-  token: { type: String, required: true },
+  // tokens is an array of string
+  tokens: { type: [String], required: true, default: [] },
   status: { type: Number, required: true, default: 0 },
   point: { type: Number, required: true, default: 0 },
   submitAt: { type: Date, default: () => { return new Date() } }
