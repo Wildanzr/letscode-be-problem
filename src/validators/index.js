@@ -11,7 +11,9 @@ const {
   getCompeteSchema,
   createCompeteProblemSchema,
   updateCompeteProblemSchema,
-  getCompeteProblemSchema
+  getCompeteProblemSchema,
+  getSubmissionInCPSchema,
+  getSubmissionDetailSchema
 } = require('./schema')
 
 class Validator {
@@ -76,6 +78,16 @@ class Validator {
 
   validateGetCompeteProblem (payload) {
     const { error } = getCompeteProblemSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetSubmissionInCP (payload) {
+    const { error } = getSubmissionInCPSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetSubmissionDetail (payload) {
+    const { error } = getSubmissionDetailSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

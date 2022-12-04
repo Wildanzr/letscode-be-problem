@@ -75,6 +75,14 @@ const getCompeteProblemSchema = Joi.object({
   competeProblemId: Joi.string().required()
 })
 
+const getSubmissionInCPSchema = Joi.object({
+  competeProblemId: Joi.string().required()
+})
+
+const getSubmissionDetailSchema = Joi.object({
+  submissionId: Joi.string().required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -87,5 +95,7 @@ module.exports = {
   getCompeteSchema,
   createCompeteProblemSchema,
   updateCompeteProblemSchema,
-  getCompeteProblemSchema
+  getCompeteProblemSchema,
+  getSubmissionInCPSchema,
+  getSubmissionDetailSchema
 }
