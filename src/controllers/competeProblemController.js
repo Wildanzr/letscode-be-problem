@@ -14,6 +14,7 @@ class CompeteProblemController {
     // Bind methods
     this.getSubmissionsInCP = this.getSubmissionsInCP.bind(this)
     this.getSubmissionDetailInCP = this.getSubmissionDetailInCP.bind(this)
+    this.getLeaderboardInCP = this.getLeaderboardInCP.bind(this)
   }
 
   async getSubmissionsInCP (req, res) {
@@ -72,6 +73,35 @@ class CompeteProblemController {
 
       // Response
       const response = this._response.success(200, 'Get submission detail successfully.', { submission })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getLeaderboardInCP (req, res) {
+    const { competeProblemId } = req.params
+    const { page, limit } = req.query
+
+    try {
+      // Validate cp page and limit
+      this._validator.validateGetLeaderboard({ competeProblemId, page, limit })
+
+      // Get leaderboards
+      const { leaderboard, total } = await this._problemSubmissionService.getLeaderboardInCP(competeProblemId, page, limit)
+
+      // Meta data
+      const meta = {
+        total,
+        limit,
+        page,
+        totalPages: Math.ceil(total / limit)
+      }
+
+      // Response
+      const response = this._response.success(200, 'Get leaderboard successfully.', { leaderboard }, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

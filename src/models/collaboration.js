@@ -8,7 +8,8 @@ const collaborationSchema = new Schema({
   },
   competeProblemId: { type: Schema.Types.String, ref: 'competeProblems' },
   codeId: { type: String, required: true }, // Also used as room name
-  participants: [{ type: Schema.Types.String, ref: 'users' }]
+  participants: [{ type: Schema.Types.String, ref: 'users' }],
+  createdAt: { type: Date, default: () => { return new Date() } }
 })
 
 // Index model auto delete in 2 hours

@@ -5,6 +5,7 @@ class CompeteProblemRoutes {
 
     this.router.get('/:competeProblemId/submissions', competeProblemController.getSubmissionsInCP)
     this.router.get('/:competeProblemId/submissions/:submissionId', competeProblemController.getSubmissionDetailInCP)
+    this.router.get('/:competeProblemId/leaderboard', competeProblemController.getLeaderboardInCP)
   }
 }
 
