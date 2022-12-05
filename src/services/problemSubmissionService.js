@@ -30,6 +30,14 @@ class ProblemSubmissionService {
 
     return { leaderboard, total }
   }
+
+  async checkCPIsDone (competeProblemId, _id) {
+    const submission = await ProblemSubmission.findOne({ competeProblemId, userId: _id })
+
+    if (!submission) return 0
+    else if (submission.currentPoints !== 100) return 1
+    else return 2
+  }
 }
 
 module.exports = {

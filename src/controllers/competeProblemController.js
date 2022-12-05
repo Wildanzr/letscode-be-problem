@@ -15,6 +15,7 @@ class CompeteProblemController {
     this.getSubmissionsInCP = this.getSubmissionsInCP.bind(this)
     this.getSubmissionDetailInCP = this.getSubmissionDetailInCP.bind(this)
     this.getLeaderboardInCP = this.getLeaderboardInCP.bind(this)
+    this.checkCPIsDone = this.checkCPIsDone.bind(this)
   }
 
   async getSubmissionsInCP (req, res) {
@@ -102,6 +103,38 @@ class CompeteProblemController {
 
       // Response
       const response = this._response.success(200, 'Get leaderboard successfully.', { leaderboard }, meta)
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkCPIsDone (req, res) {
+    const token = req.headers.authorization
+    const { competeProblemId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+
+      // Validate payload
+      this._validator.validateGetSubmissionInCP({ competeProblemId })
+
+      // Check cp is solved, try again or not
+      const isDone = await this._problemSubmissionService.checkCPIsDone(competeProblemId, _id)
+
+      // Response
+      const response = this._response.success(200, 'Check cp is done successfully.', { isDone })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
