@@ -5,6 +5,7 @@ class CompeteRoutes {
 
     this.router.post('/', competeController.createCompete)
     this.router.get('/', competeController.getCompetes)
+    this.router.get('/journey-progress', competeController.checkOverallProgress)
     this.router.get('/:competeId', competeController.getCompete)
     this.router.put('/:competeId', competeController.updateCompete)
     this.router.delete('/:competeId', competeController.deleteCompete)

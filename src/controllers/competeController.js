@@ -23,6 +23,7 @@ class CompeteController {
     this.getCompeteProblems = this.getCompeteProblems.bind(this)
     this.searchCompeteProblems = this.searchCompeteProblems.bind(this)
     this.checkCompeteProgress = this.checkCompeteProgress.bind(this)
+    this.checkOverallProgress = this.checkOverallProgress.bind(this)
 
     this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
@@ -328,6 +329,52 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Check compete progress successfully.', { solved, total })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkOverallProgress (req, res) {
+    const token = req.headers.authorization
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+
+      // Get all compete journeys
+      const journeys = await this._competeService.getAllJourneys()
+
+      // Count progress
+      let solved = 0
+      let total = 0
+
+      // Iterate journeys
+      for (const journey of journeys) {
+        const { problems } = journey
+        total += problems.length
+
+        // Iterate problems
+        for (const problem of problems) {
+          const isDone = await this._problemSubmissionService.checkCPIsDone(problem, _id)
+          if (isDone === 2) solved++
+        }
+      }
+
+      // Count progress as percentage with 2 decimal places
+      const progress = parseFloat((solved / total * 100).toFixed(2))
+
+      // Response
+      const response = this._response.success(200, 'Check overall progress successfully.', { progress })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

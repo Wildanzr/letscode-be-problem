@@ -180,6 +180,15 @@ class CompeteService {
 
     return { compete, total }
   }
+
+  async getAllJourneys () {
+    const competes = await Compete.find({ isLearnPath: true })
+      .sort({ name: 1 })
+      .select('_id problems')
+      .exec()
+
+    return competes || []
+  }
 }
 
 module.exports = {
