@@ -24,6 +24,7 @@ class CompeteController {
     this.searchCompeteProblems = this.searchCompeteProblems.bind(this)
     this.checkCompeteProgress = this.checkCompeteProgress.bind(this)
     this.checkOverallProgress = this.checkOverallProgress.bind(this)
+    this.getOverallLeaderboard = this.getOverallLeaderboard.bind(this)
 
     this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
@@ -381,6 +382,20 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Check overall progress successfully.', payload)
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getOverallLeaderboard (req, res) {
+    try {
+      const users = await this._userService.getTop25Leaderboard()
+
+      // Response
+      const response = this._response.success(200, 'Get overall leaderboard successfully.', users)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
