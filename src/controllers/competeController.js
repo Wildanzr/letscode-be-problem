@@ -1,10 +1,11 @@
 const { ClientError } = require('../errors')
 
 class CompeteController {
-  constructor (competeService, competeProblemService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize) {
+  constructor (competeService, competeProblemService, problemSubmissionService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize) {
     this.name = 'CompeteController'
     this._competeService = competeService
     this._competeProblemService = competeProblemService
+    this._problemSubmissionService = problemSubmissionService
     this._problemService = problemService
     this._testCaseService = testCaseService
     this._sampleCaseService = sampleCaseService
@@ -21,6 +22,7 @@ class CompeteController {
     this.deleteCompete = this.deleteCompete.bind(this)
     this.getCompeteProblems = this.getCompeteProblems.bind(this)
     this.searchCompeteProblems = this.searchCompeteProblems.bind(this)
+    this.checkCompeteProgress = this.checkCompeteProgress.bind(this)
 
     this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
@@ -286,6 +288,46 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Search compete problems successfully.', compete, meta)
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkCompeteProgress (req, res) {
+    const token = req.headers.authorization
+    const { competeId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+
+      // Validate payload
+      this._validator.validateGetCompete({ competeId })
+
+      // Get compete problems
+      const compete = await this._competeService.getCompeteProblems(competeId)
+      const { problems } = compete
+
+      // Count progress
+      let solved = 0
+      const total = problems.length
+      for (const problem of problems) {
+        const isDone = await this._problemSubmissionService.checkCPIsDone(problem._id, _id)
+        if (isDone === 2) solved++
+      }
+
+      // Response
+      const response = this._response.success(200, 'Check compete progress successfully.', { solved, total })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

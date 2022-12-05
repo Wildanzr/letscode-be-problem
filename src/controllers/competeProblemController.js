@@ -125,7 +125,6 @@ class CompeteProblemController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
 
       // Validate payload
       this._validator.validateGetSubmissionInCP({ competeProblemId })

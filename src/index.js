@@ -33,7 +33,7 @@ const validator = new Validator()
 // Controllers
 const { ProblemController, CompeteController, CompeteProblemController } = require('./controllers')
 const problemController = new ProblemController(problemService, sampleCaseService, testCaseService, validator, response, tokenize)
-const competeController = new CompeteController(competeService, competeProblemService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize)
+const competeController = new CompeteController(competeService, competeProblemService, problemSubmissionService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize)
 const competeProblemController = new CompeteProblemController(competeProblemService, problemSubmissionService, submissionService, userService, validator, response, tokenize)
 
 // Routes
