@@ -373,8 +373,14 @@ class CompeteController {
       // Count progress as percentage with 2 decimal places
       const progress = parseFloat((solved / total * 100).toFixed(2))
 
+      // Payload
+      const payload = {
+        progress,
+        point: user.point
+      }
+
       // Response
-      const response = this._response.success(200, 'Check overall progress successfully.', { progress })
+      const response = this._response.success(200, 'Check overall progress successfully.', payload)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
