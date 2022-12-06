@@ -11,7 +11,7 @@ class UserService {
 
   async getTop25Leaderboard () {
     return await User.find({ role: 0, isVerified: true })
-      .sort({ score: -1 })
+      .sort({ point: -1 })
       .limit(25)
       .select('username avatar point')
       .lean()
