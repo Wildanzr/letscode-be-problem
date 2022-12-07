@@ -491,7 +491,6 @@ class CompeteController {
 
         // Push participant to leaderboard
         leaderboard.push({
-          _id: participant._id,
           username: participant.username,
           point
         })
