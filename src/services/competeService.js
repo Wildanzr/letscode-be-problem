@@ -218,7 +218,7 @@ class CompeteService {
   async getCompeteParticipantsAndCPs (competeId) {
     const compete = await Compete.findById(competeId)
       .select('participants problems')
-      .populate([{ path: 'participants', select: '_id username' }])
+      .populate([{ path: 'participants', select: 'avatar username' }])
       .lean()
 
     if (!compete) throw new ClientError('Compete not found.', 404)
