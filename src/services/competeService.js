@@ -189,6 +189,31 @@ class CompeteService {
 
     return competes || []
   }
+
+  async joinCompete (competeId, userId, key) {
+    const compete = await Compete.findById(competeId)
+    if (!compete) throw new ClientError('Compete not found.', 404)
+
+    if (compete.key !== key) throw new ClientError('Wrong key.', 400)
+
+    if (compete.participants.includes(userId)) {
+      throw new ClientError('You have already joined this compete.', 400)
+    } else {
+      compete.participants.push(userId)
+      await compete.save()
+    }
+  }
+
+  async checkJoinedCompete (competeId, userId) {
+    const compete = await Compete.findById(competeId)
+    if (!compete) throw new ClientError('Compete not found.', 404)
+
+    if (compete.participants.includes(userId)) {
+      return true
+    }
+
+    return false
+  }
 }
 
 module.exports = {

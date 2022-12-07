@@ -89,6 +89,11 @@ const getLeaderboardSchema = Joi.object({
   limit: Joi.number().min(1).max(100).required()
 })
 
+const joinCompeteSchema = Joi.object({
+  competeId: Joi.string().required(),
+  key: Joi.string().required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -104,5 +109,6 @@ module.exports = {
   getCompeteProblemSchema,
   getSubmissionInCPSchema,
   getSubmissionDetailSchema,
-  getLeaderboardSchema
+  getLeaderboardSchema,
+  joinCompeteSchema
 }

@@ -25,6 +25,8 @@ class CompeteController {
     this.checkCompeteProgress = this.checkCompeteProgress.bind(this)
     this.checkOverallProgress = this.checkOverallProgress.bind(this)
     this.getOverallLeaderboard = this.getOverallLeaderboard.bind(this)
+    this.joinCompete = this.joinCompete.bind(this)
+    this.checkJoinedCompete = this.checkJoinedCompete.bind(this)
 
     this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
@@ -396,6 +398,69 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Get overall leaderboard successfully.', users)
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async joinCompete (req, res) {
+    const token = req.headers.authorization
+    const { competeId } = req.params
+    const { key } = req.body
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+
+      // Validate payload
+      this._validator.validateJoinCompete({ competeId, key })
+
+      // Join compete
+      await this._competeService.joinCompete(competeId, _id, key)
+
+      // Response
+      const response = this._response.success(200, 'Join compete successfully.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkJoinedCompete (req, res) {
+    const token = req.headers.authorization
+    const { competeId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('There is no auth token.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Invalid authorization.', 401)
+
+      // Validate payload
+      this._validator.validateGetCompete({ competeId })
+
+      // Check joined compete
+      const isJoined = await this._competeService.checkJoinedCompete(competeId, _id)
+
+      // Response
+      const response = this._response.success(200, 'Check joined compete successfully.', { isJoined })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

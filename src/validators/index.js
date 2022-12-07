@@ -14,7 +14,8 @@ const {
   getCompeteProblemSchema,
   getSubmissionInCPSchema,
   getSubmissionDetailSchema,
-  getLeaderboardSchema
+  getLeaderboardSchema,
+  joinCompeteSchema
 } = require('./schema')
 
 class Validator {
@@ -94,6 +95,11 @@ class Validator {
 
   validateGetLeaderboard (payload) {
     const { error } = getLeaderboardSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateJoinCompete (payload) {
+    const { error } = joinCompeteSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }
