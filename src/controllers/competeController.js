@@ -27,6 +27,7 @@ class CompeteController {
     this.getOverallLeaderboard = this.getOverallLeaderboard.bind(this)
     this.joinCompete = this.joinCompete.bind(this)
     this.checkJoinedCompete = this.checkJoinedCompete.bind(this)
+    this.getCompeteLeaderboard = this.getCompeteLeaderboard.bind(this)
 
     this.getCompeteProblem = this.getCompeteProblem.bind(this)
     this.createCompeteProblem = this.createCompeteProblem.bind(this)
@@ -461,6 +462,46 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Check joined compete successfully.', { isJoined })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getCompeteLeaderboard (req, res) {
+    const { competeId } = req.params
+
+    try {
+      // Validate payload
+      this._validator.validateGetCompete({ competeId })
+
+      // Get all participants in compete
+      const { participants, problems } = await this._competeService.getCompeteParticipantsAndCPs(competeId)
+
+      // Iterate participants to get their point in compete
+      const leaderboard = []
+      for (const participant of participants) {
+        let point = 0
+        for (const problem of problems) {
+          const currentPoint = await this._problemSubmissionService.getCPPoint(participant._id, problem)
+          point += currentPoint
+        }
+
+        // Push participant to leaderboard
+        leaderboard.push({
+          _id: participant._id,
+          username: participant.username,
+          point
+        })
+      }
+
+      // Sort leaderboard
+      leaderboard.sort((a, b) => b.point - a.point)
+
+      // Response
+      const response = this._response.success(200, 'Get compete leaderboard successfully.', { leaderboard })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

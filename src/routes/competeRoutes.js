@@ -15,6 +15,7 @@ class CompeteRoutes {
     this.router.get('/:competeId/problems', competeController.getCompeteProblems)
     this.router.get('/:competeId/challenges', competeController.searchCompeteProblems)
     this.router.get('/:competeId/progress', competeController.checkCompeteProgress)
+    this.router.get('/:competeId/leaderboard', competeController.getCompeteLeaderboard)
 
     this.router.get('/cp/:competeProblemId', competeController.getCompeteProblem)
     this.router.post('/:competeId/problems', competeController.createCompeteProblem)

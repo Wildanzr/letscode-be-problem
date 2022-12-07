@@ -38,6 +38,16 @@ class ProblemSubmissionService {
     else if (submission.currentPoints !== 100) return 1
     else return 2
   }
+
+  async getCPPoint (userId, competeProblemId) {
+    const point = await ProblemSubmission.findOne({ userId, competeProblemId })
+      .select('currentPoints')
+      .exec()
+
+    if (!point) return 0
+
+    return point.currentPoints
+  }
 }
 
 module.exports = {

@@ -15,7 +15,6 @@ const competeSchema = new Schema({
   isLearnPath: { type: Boolean, default: false },
   isChallenge: { type: Boolean, default: false },
   problems: [{ type: Schema.Types.String, ref: 'competeProblems' }],
-  leaderboard: [{ type: Schema.Types.String, ref: 'competeLeaderboards' }],
   languageAllowed: { type: Array, required: true },
   participants: [{ type: Schema.Types.String, ref: 'users' }]
 })

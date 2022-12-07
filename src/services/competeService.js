@@ -214,6 +214,17 @@ class CompeteService {
 
     return false
   }
+
+  async getCompeteParticipantsAndCPs (competeId) {
+    const compete = await Compete.findById(competeId)
+      .select('participants problems')
+      .populate([{ path: 'participants', select: '_id username' }])
+      .lean()
+
+    if (!compete) throw new ClientError('Compete not found.', 404)
+
+    return compete
+  }
 }
 
 module.exports = {
