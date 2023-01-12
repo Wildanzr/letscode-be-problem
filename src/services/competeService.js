@@ -109,7 +109,7 @@ class CompeteService {
       )
       .exec()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     return compete
   }
@@ -137,7 +137,7 @@ class CompeteService {
       .select('problems')
       .exec()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     return compete
   }
@@ -160,7 +160,7 @@ class CompeteService {
       .select('problems')
       .exec()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     // Filter based on query
     let problems = compete.problems
@@ -192,12 +192,12 @@ class CompeteService {
 
   async joinCompete (competeId, userId, key) {
     const compete = await Compete.findById(competeId)
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
-    if (compete.key !== key) throw new ClientError('Wrong key.', 400)
+    if (compete.key !== key) throw new ClientError('Kode tidak valid.', 400)
 
     if (compete.participants.includes(userId)) {
-      throw new ClientError('You have already joined this compete.', 400)
+      throw new ClientError('Sudah tergabung dalam kompetisi.', 400)
     } else {
       compete.participants.push(userId)
       await compete.save()
@@ -206,7 +206,7 @@ class CompeteService {
 
   async checkJoinedCompete (competeId, userId) {
     const compete = await Compete.findById(competeId)
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     if (compete.participants.includes(userId)) {
       return true
@@ -221,7 +221,7 @@ class CompeteService {
       .populate([{ path: 'participants', select: 'avatar username' }])
       .lean()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     return compete
   }

@@ -8,7 +8,7 @@ class SubmissionService {
 
   async getSubmissionDetail (submissionId) {
     const submission = await Submission.findById(submissionId)
-    if (!submission) throw new ClientError('Submission not found.', 404)
+    if (!submission) throw new ClientError('Pengumpulan tidak ditemukan.', 404)
 
     return submission
   }
