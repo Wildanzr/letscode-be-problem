@@ -16,6 +16,18 @@ class UserService {
       .select('username avatar point')
       .lean()
   }
+
+  async getTotalTeacherAndStudent () {
+    // get all users only role property but isVerified is true, then count the number of teacher and student
+    const users = await User.find({ isVerified: true })
+      .select('role')
+      .lean()
+
+    const totalTeacher = users.filter(user => user.role === 1).length
+    const totalStudent = users.filter(user => user.role === 0).length
+
+    return { totalTeacher, totalStudent }
+  }
 }
 
 module.exports = {
