@@ -24,14 +24,14 @@ class CompeteProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Validate payload
       this._validator.validateGetSubmissionInCP({ competeProblemId })
@@ -40,7 +40,7 @@ class CompeteProblemController {
       const submissions = await this._problemSubmissionService.getSubmissionsInCP(competeProblemId, _id)
 
       // Response
-      const response = this._response.success(200, 'Get submissions list successfully.', submissions)
+      const response = this._response.success(200, 'Berhasil mendapatkan data pengumpulan.', submissions)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -55,14 +55,14 @@ class CompeteProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Validate payload
       this._validator.validateGetSubmissionDetail({ submissionId })
@@ -71,7 +71,7 @@ class CompeteProblemController {
       const submission = await this._submissionService.getSubmissionDetail(submissionId)
 
       // Response
-      const response = this._response.success(200, 'Get submission detail successfully.', { submission })
+      const response = this._response.success(200, 'Berhasil mendapatkan detail data pengumpulan.', { submission })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -100,7 +100,7 @@ class CompeteProblemController {
       }
 
       // Response
-      const response = this._response.success(200, 'Get leaderboard successfully.', { leaderboard }, meta)
+      const response = this._response.success(200, 'Berhasil mendapatkan papan peringkat permasalahan dalam kompetisi.', { leaderboard }, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -115,14 +115,14 @@ class CompeteProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Validate payload
       this._validator.validateGetSubmissionInCP({ competeProblemId })
@@ -131,7 +131,7 @@ class CompeteProblemController {
       const isDone = await this._problemSubmissionService.checkCPIsDone(competeProblemId, _id)
 
       // Response
-      const response = this._response.success(200, 'Check cp is done successfully.', { isDone })
+      const response = this._response.success(200, 'Berhasil mengecek kemajuan permasalahan dalam kompetisi.', { isDone })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
