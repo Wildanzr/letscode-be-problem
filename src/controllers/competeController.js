@@ -34,6 +34,8 @@ class CompeteController {
     this.updateCompeteProblem = this.updateCompeteProblem.bind(this)
     this.deleteCompeteProblem = this.deleteCompeteProblem.bind(this)
     this.getDashboardStats = this.getDashboardStats.bind(this)
+    this.getStudentsData = this.getStudentsData.bind(this)
+    this.getStudentProgressData = this.getStudentProgressData.bind(this)
   }
 
   // Competes
@@ -713,6 +715,71 @@ class CompeteController {
 
       // Response
       const response = this._response.success(200, 'Berhasil mendapatkan data statistik dashboard.', payload)
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async getStudentsData (req, res) {
+    const { q, page, limit } = req.query
+    const token = req.headers.authorization
+
+    try {
+      // Validate payload
+      this._validator.validateGetStudentsData({ q, page, limit })
+
+      // Check token
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+
+      // Get all students
+      const students = await this._userService.getStudentsData(q, page, limit)
+
+      // Response
+      const response = this._response.success(200, 'Berhasil mendapatkan data peserta didik.', students)
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      return this._response.error(res, error)
+    }
+  }
+
+  async getStudentProgressData (req, res) {
+    const { studentId } = req.params
+
+    try {
+      // Get all compete journeys
+      const journeys = await this._competeService.getAllJourneys()
+
+      // Count progress
+      let solved = 0
+      let total = 0
+
+      // Iterate journeys
+      for (const journey of journeys) {
+        const { problems } = journey
+        total += problems.length
+
+        // Iterate problems
+        for (const problem of problems) {
+          const isDone = await this._problemSubmissionService.checkCPIsDone(problem, studentId)
+          if (isDone === 2) solved++
+        }
+      }
+
+      // Count progress as percentage with 2 decimal places
+      const progress = parseFloat((solved / total * 100).toFixed(2))
+
+      // Response
+      const response = this._response.success(200, 'Berhasil mengecek kemajuan belajar.', { progress })
+
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)

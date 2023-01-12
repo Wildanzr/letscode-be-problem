@@ -10,6 +10,8 @@ class CompeteRoutes {
     this.router.get('/join/:competeId', competeController.checkJoinedCompete)
     this.router.post('/join/:competeId', competeController.joinCompete)
     this.router.get('/statistics', competeController.getDashboardStats)
+    this.router.get('/student-list', competeController.getStudentsData)
+    this.router.get('/student-progress/:studentId', competeController.getStudentProgressData)
     this.router.get('/:competeId', competeController.getCompete)
     this.router.put('/:competeId', competeController.updateCompete)
     this.router.delete('/:competeId', competeController.deleteCompete)

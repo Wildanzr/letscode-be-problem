@@ -94,6 +94,12 @@ const joinCompeteSchema = Joi.object({
   key: Joi.string().required()
 })
 
+const getStudentDataSchema = Joi.object({
+  q: Joi.string().allow(''),
+  page: Joi.number().min(1).required(),
+  limit: Joi.number().min(1).max(100).required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -110,5 +116,6 @@ module.exports = {
   getSubmissionInCPSchema,
   getSubmissionDetailSchema,
   getLeaderboardSchema,
-  joinCompeteSchema
+  joinCompeteSchema,
+  getStudentDataSchema
 }

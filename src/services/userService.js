@@ -28,6 +28,25 @@ class UserService {
 
     return { totalTeacher, totalStudent }
   }
+
+  async getStudentsData (query) {
+    let { q, page, limit } = query
+    if (q === '' || q === undefined) q = ''
+
+    // Get student data based on query
+    const students = await User.find({
+      fullName: { $regex: q, $options: 'i' },
+      role: 0,
+      isVerified: true
+    })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ fullName: 1 })
+      .select('_id fullName username avatar point')
+      .lean()
+
+    return students
+  }
 }
 
 module.exports = {
