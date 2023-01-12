@@ -51,11 +51,11 @@ class CompeteController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       if (payload.start !== null || payload.end !== null) {
         // Check if start time is greater than end time
-        if (payload.start > payload.end) throw new ClientError('Start time must be less than end time.', 400)
+        if (payload.start > payload.end) throw new ClientError('Waktu mulai harus kurang dari waktu selesai.', 400)
       }
 
       // If start time is null, set it to now and set end time for year 2100
@@ -72,7 +72,7 @@ class CompeteController {
       const compete = await this._competeService.createCompete(payload)
 
       // Response
-      const response = this._response.success(201, 'Create compete successfully.', { compete })
+      const response = this._response.success(201, 'Kompetisi berhasil dibuat.', { compete })
 
       // Response
       return res.status(response.statusCode || 201).json(response)
@@ -101,7 +101,7 @@ class CompeteController {
       }
 
       // Response
-      const response = this._response.success(200, 'Get competes successfully.', { competes }, meta)
+      const response = this._response.success(200, 'Berhasil mendapatkan data kompetisi.', { competes }, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -121,7 +121,7 @@ class CompeteController {
       const compete = await this._competeService.getCompete(competeId)
 
       // Response
-      const response = this._response.success(200, 'Get compete successfully.', { compete })
+      const response = this._response.success(200, 'Berhasil mendapatkan data kompetisi.', { compete })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -145,18 +145,18 @@ class CompeteController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Get compete by id
       const compete = await this._competeService.findCompeteById(competeId)
-      if (!compete) throw new ClientError('Compete not found.', 404)
+      if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Otorisasi ditolak untuk memperbarui kompetisi.', 401)
 
       if (payload.start !== null || payload.end !== null) {
         // Check if start time is greater than end time
-        if (payload.start > payload.end) throw new ClientError('Start time must be less than end time.', 400)
+        if (payload.start > payload.end) throw new ClientError('Waktu mulai harus kurang dari waktu selesai.', 400)
       }
 
       // If start time is null, set it to now and set end time for year 2100
@@ -173,7 +173,7 @@ class CompeteController {
       const updatedCompete = await this._competeService.updateCompete(competeId, payload)
 
       // Response
-      const response = this._response.success(200, 'Update compete successfully.', { compete: updatedCompete })
+      const response = this._response.success(200, 'Berhasil memperbarui kompetisi.', { compete: updatedCompete })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -196,14 +196,14 @@ class CompeteController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Get compete by id
       const compete = await this._competeService.findCompeteById(competeId)
-      if (!compete) throw new ClientError('Compete not found.', 404)
+      if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Otorisasi ditolak untuk memperbarui kompetisi.', 401)
 
       // Validate payload
       this._validator.validateGetCompete({ competeId })
@@ -213,11 +213,11 @@ class CompeteController {
       // Delete compete problems, problem, sample case, and test case
       for (const cp of competeProblems) {
         const competeProblem = await this._competeProblemService.findCompeteProblemById(cp)
-        if (!competeProblem) throw new ClientError('Compete problem not found.', 404)
+        if (!competeProblem) throw new ClientError('Permasalahan dalam kompetisi tidak ditemukan.', 404)
         const { problemId } = competeProblem
 
         const problem = await this._problemService.getProblemById(problemId)
-        if (!problem) throw new ClientError('Problem not found.', 404)
+        if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
         // Iterate problem test cases, then delete it
         for (const testCaseId of problem.testCases) {
@@ -240,7 +240,7 @@ class CompeteController {
       await this._competeService.deleteCompete(competeId)
 
       // Response
-      const response = this._response.success(200, 'Delete compete successfully.')
+      const response = this._response.success(200, 'Berhasil menghapus kompetisi.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -260,7 +260,7 @@ class CompeteController {
       const problems = await this._competeService.getCompeteProblems(competeId)
 
       // Response
-      const response = this._response.success(200, 'Get compete problems successfully.', problems)
+      const response = this._response.success(200, 'Berhasil mendapatkan data permasalahan dalam kompetisi.', problems)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -293,7 +293,7 @@ class CompeteController {
       }
 
       // Response
-      const response = this._response.success(200, 'Search compete problems successfully.', compete, meta)
+      const response = this._response.success(200, 'Pencarian permasalahan dalam kompetisi berhasil.', compete, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -314,7 +314,7 @@ class CompeteController {
       const competeProblem = await this._competeProblemService.getCompeteProblemDetail(competeProblemId)
 
       // Response
-      const response = this._response.success(200, 'Get compete problem successfully.', { competeProblem })
+      const response = this._response.success(200, 'Berhasil mendaptakan data permasalahan dalam kompetisi.', { competeProblem })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -338,18 +338,18 @@ class CompeteController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Get compete by id
       const compete = await this._competeService.findCompeteById(competeId)
-      if (!compete) throw new ClientError('Compete not found.', 404)
+      if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to create problem compete in this compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Otorisasi ditolak untuk membuat permasalahan dalam kompetisi ini.', 401)
 
       // Check if problem exists
       const problem = await this._problemService.findProblemById(payload.problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Validate payload
       payload.competeId = competeId
@@ -363,7 +363,7 @@ class CompeteController {
       await compete.save()
 
       // Response
-      const response = this._response.success(200, 'Create compete problem successfully.')
+      const response = this._response.success(200, 'Berhasil mendapatkan data permasalahan dalam kompetisi.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -387,18 +387,18 @@ class CompeteController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Get compete by id
       const compete = await this._competeService.findCompeteById(competeId)
-      if (!compete) throw new ClientError('Compete not found.', 404)
+      if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to update this problem compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Otorisasi ditolak untuk memperbarui permasalahan dalam kompetisi ini.', 401)
 
       // Check if problem exists
       const problem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
-      if (!problem) throw new ClientError('Compete problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan dalam kompetisi tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateUpdateCompeteProblem(payload)
@@ -407,7 +407,7 @@ class CompeteController {
       await this._competeProblemService.updateCompeteProblem(competeProblemId, payload)
 
       // Response
-      const response = this._response.success(200, 'Update compete problem successfully.')
+      const response = this._response.success(200, 'Berhasil memperbarui data permasalahan dalam kompetisi.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -430,22 +430,22 @@ class CompeteController {
       // Check user _id
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Get compete by id
       const compete = await this._competeService.findCompeteById(competeId)
-      if (!compete) throw new ClientError('Compete not found.', 404)
+      if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
       // Make sure user is the owner of the compete
       if (compete.challenger !== _id) throw new ClientError('Unauthorize to delete this problem compete.', 401)
 
       // Check if compete problem exists
       const competeProblem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
-      if (!competeProblem) throw new ClientError('Compete problem not found.', 404)
+      if (!competeProblem) throw new ClientError('Permasalahan dalam kompetisi tidak ditemukan.', 404)
 
       // Get problem
       const problem = await this._problemService.getProblemById(competeProblem.problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Iterate problem test cases, then delete it
       for (const testCaseId of problem.testCases) {
@@ -507,7 +507,7 @@ class CompeteController {
       }
 
       // Response
-      const response = this._response.success(200, 'Check compete progress successfully.', { solved, total })
+      const response = this._response.success(200, 'Berhasil mengecek statistik kemajuan.', { solved, total })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -559,7 +559,7 @@ class CompeteController {
       }
 
       // Response
-      const response = this._response.success(200, 'Check overall progress successfully.', payload)
+      const response = this._response.success(200, 'Berhasil mengecek kemajuan belajar.', payload)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -573,7 +573,7 @@ class CompeteController {
       const users = await this._userService.getTop25Leaderboard()
 
       // Response
-      const response = this._response.success(200, 'Get overall leaderboard successfully.', users)
+      const response = this._response.success(200, 'Berhasil mendapatkan data papan peringkat.', users)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -605,7 +605,7 @@ class CompeteController {
       await this._competeService.joinCompete(competeId, _id, key)
 
       // Response
-      const response = this._response.success(200, 'Join compete successfully.')
+      const response = this._response.success(200, 'Berhasil bergabung kompetisi.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -636,7 +636,7 @@ class CompeteController {
       const isJoined = await this._competeService.checkJoinedCompete(competeId, _id)
 
       // Response
-      const response = this._response.success(200, 'Check joined compete successfully.', { isJoined })
+      const response = this._response.success(200, 'Berhasil mengecek keikutsertaan kompetisi.', { isJoined })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -676,7 +676,7 @@ class CompeteController {
       leaderboard.sort((a, b) => b.point - a.point)
 
       // Response
-      const response = this._response.success(200, 'Get compete leaderboard successfully.', { leaderboard })
+      const response = this._response.success(200, 'Berhasil mendapatkan data papan peringkat kompetisi.', { leaderboard })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -700,22 +700,19 @@ class CompeteController {
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Get total students and teachers
-      const { totalTeacher, totalStudent } = await this._userService.getTotalTeacherAndStudent()
+      const userStatistics = await this._userService.getTotalTeacherAndStudent()
 
       // Get total problems, competes, and submissions
-      const { totalProblems, totalCompetes, totalSubmissions } = await this._problemService.getDashboardStats()
+      const problemStatistics = await this._problemService.getDashboardStats()
 
       // Statistics payload
       const payload = {
-        totalTeacher,
-        totalStudent,
-        totalProblems,
-        totalCompetes,
-        totalSubmissions
+        ...userStatistics,
+        ...problemStatistics
       }
 
       // Response
-      const response = this._response.success(200, 'Get dashboard statistics successfully.', payload)
+      const response = this._response.success(200, 'Berhasil mendapatkan data statistik dashboard.', payload)
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
