@@ -44,7 +44,14 @@ class UserService {
       .select('_id fullName username avatar point')
       .exec()
 
-    return students
+    // Count total students
+    const total = await User.countDocuments({
+      fullName: { $regex: q, $options: 'i' },
+      role: 0,
+      isVerified: true
+    })
+
+    return { students, total }
   }
 }
 

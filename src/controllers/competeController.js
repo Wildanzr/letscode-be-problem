@@ -740,10 +740,18 @@ class CompeteController {
       if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
 
       // Get all students
-      const students = await this._userService.getStudentsData({ q, page, limit })
+      const { students, total } = await this._userService.getStudentsData({ q, page, limit })
+
+      // Meta data
+      const meta = {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPage: Math.ceil(total / limit)
+      }
 
       // Response
-      const response = this._response.success(200, 'Berhasil mendapatkan data peserta didik.', students)
+      const response = this._response.success(200, 'Berhasil mendapatkan data peserta didik.', students, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
