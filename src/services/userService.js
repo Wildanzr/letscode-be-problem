@@ -38,12 +38,11 @@ class UserService {
       fullName: { $regex: q, $options: 'i' },
       role: 0,
       isVerified: true
-    })
-      .skip((page - 1) * limit)
+    }).skip((page - 1) * limit)
       .limit(limit)
       .sort({ fullName: 1 })
       .select('_id fullName username avatar point')
-      .lean()
+      .exec()
 
     return students
   }
