@@ -93,9 +93,9 @@ class CompeteProblemController {
 
       // Meta data
       const meta = {
-        total,
-        limit,
-        page,
+        total: parseInt(total),
+        limit: parseInt(limit),
+        page: parseInt(page),
         totalPages: Math.ceil(total / limit)
       }
 
