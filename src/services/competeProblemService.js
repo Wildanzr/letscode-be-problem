@@ -38,7 +38,7 @@ class CompeteProblemService {
       .select('problemId maxPoint')
       .exec()
 
-    if (!competeProblem) throw new ClientError('Compete problem not found', 404)
+    if (!competeProblem) throw new ClientError('Permasalahan dalam kompetisi tidak ditemukan', 404)
 
     return competeProblem
   }

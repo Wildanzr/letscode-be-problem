@@ -37,19 +37,19 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateCreateProblemSampleCase(payload)
@@ -64,7 +64,7 @@ class ProblemController {
       await problem.save()
 
       // Response
-      const response = this._response.success(200, 'Sample case created')
+      const response = this._response.success(200, 'Berhasil membuat contoh kasus')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -79,10 +79,10 @@ class ProblemController {
     try {
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Make sure sampleCaseId is exist in problem.sampleCases
-      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Sample case not found.', 404)
+      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Contoh kasus tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateGetProblemSampleCase({ sampleCaseId })
@@ -91,7 +91,7 @@ class ProblemController {
       const sampleCase = await this._sampleCaseService.getSampleCaseById(sampleCaseId)
 
       // Response
-      const response = this._response.success(200, 'Get sample case success.', { sampleCase })
+      const response = this._response.success(200, 'Berhasil mendapatkan data contoh kasus.', { sampleCase })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -106,22 +106,22 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Make sure sampleCaseId is exist in problem.sampleCases
-      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Sample case not found.', 404)
+      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Contoh kasus tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateGetProblemSampleCase({ sampleCaseId })
@@ -134,7 +134,7 @@ class ProblemController {
       await problem.save()
 
       // Response
-      const response = this._response.success(200, 'Delete sample case success.')
+      const response = this._response.success(200, 'Berhasil menghapus data contoh kasus.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -150,22 +150,22 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Make sure sampleCaseId is exist in problem.sampleCases
-      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Sample case not found.', 404)
+      if (!problem.sampleCases.includes(sampleCaseId)) throw new ClientError('Contoh kasus tidak ditemukan.', 404)
 
       // Validate payload
       if (payload.explanation === '') payload.explanation = null
@@ -176,7 +176,7 @@ class ProblemController {
       await this._sampleCaseService.updateSampleCaseById(sampleCaseId, payload)
 
       // Response
-      const response = this._response.success(200, 'Update sample case success.')
+      const response = this._response.success(200, 'Berhasil memperbarui contoh kasus.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -193,19 +193,19 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateCreateProblemTestCase(payload)
@@ -218,7 +218,7 @@ class ProblemController {
       await problem.save()
 
       // Response
-      const response = this._response.success(200, 'Test case created')
+      const response = this._response.success(200, 'Berhasil membuat uji kasus.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -233,10 +233,10 @@ class ProblemController {
     try {
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Make sure testCaseId is exist in problem.testCases
-      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Test case not found.', 404)
+      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Uji kasus tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateGetProblemTestCase({ testCaseId })
@@ -245,7 +245,7 @@ class ProblemController {
       const testCase = await this._testCaseService.getTestCaseById(testCaseId)
 
       // Response
-      const response = this._response.success(200, 'Get test case success.', { testCase })
+      const response = this._response.success(200, 'Berhasil mendapatkan data uji kasus.', { testCase })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -260,22 +260,22 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Make sure testCaseId is exist in problem.testCases
-      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Test case not found.', 404)
+      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Uji kasus tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateGetProblemTestCase({ testCaseId })
@@ -288,7 +288,7 @@ class ProblemController {
       await problem.save()
 
       // Response
-      const response = this._response.success(200, 'Delete test case success.')
+      const response = this._response.success(200, 'Berhasil menghapus uji kasus.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -304,22 +304,22 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Check problem is exist
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Make sure testCaseId is exist in problem.testCases
-      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Test case not found.', 404)
+      if (!problem.testCases.includes(testCaseId)) throw new ClientError('Uji kasus tidak ditemukan.', 404)
 
       // Validate payload
       this._validator.validateCreateProblemTestCase(payload)
@@ -328,7 +328,7 @@ class ProblemController {
       await this._testCaseService.updateTestCaseById(testCaseId, payload)
 
       // Response
-      const response = this._response.success(200, 'Update test case success.')
+      const response = this._response.success(200, 'Berhasil memperbarui uji kasus.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -344,15 +344,15 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Validate payload
       payload.challenger = _id
@@ -362,7 +362,7 @@ class ProblemController {
       const problem = await this._problemService.createProblem(payload)
 
       // Response
-      const response = this._response.success(200, 'Problem created', { problem })
+      const response = this._response.success(200, 'Berhasil membuat permasalahan', { problem })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -380,10 +380,10 @@ class ProblemController {
 
       // Get problem data
       const problem = await this._problemService.getProblemDataById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Response
-      const response = this._response.success(200, 'Get problem success.', { problem })
+      const response = this._response.success(200, 'Berhasil mendapatkan data permasalahan.', { problem })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -399,15 +399,15 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Validate payload
       payload.challenger = _id
@@ -417,7 +417,7 @@ class ProblemController {
       await this._problemService.updateProblemById(problemId, payload)
 
       // Response
-      const response = this._response.success(200, 'Update problem success.')
+      const response = this._response.success(200, 'Berhasil memperbarui permasalahan.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -432,22 +432,22 @@ class ProblemController {
 
     try {
       // Check token
-      if (!token) throw new ClientError('There is no auth token.', 401)
+      if (!token) throw new ClientError('Tidak ada otorisasi.', 401)
 
       // Verify token
       const { _id } = await this._tokenize.verify(token)
 
       // Check user _id
       const user = await this._problemService.findUserById(_id)
-      if (!user) throw new ClientError('Invalid authorization.', 401)
-      if (user.role === 0) throw new ClientError('Permission denied.', 403)
+      if (!user) throw new ClientError('Otorisasi tidak valid.', 401)
+      if (user.role === 0) throw new ClientError('Otorisasi ditolak.', 403)
 
       // Validate payload
       this._validator.validateGetProblem({ problemId })
 
       // Get problem
       const problem = await this._problemService.getProblemById(problemId)
-      if (!problem) throw new ClientError('Problem not found.', 404)
+      if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
       // Iterate problem test cases, then delete it
       for (const testCaseId of problem.testCases) {
@@ -463,7 +463,7 @@ class ProblemController {
       await this._problemService.deleteProblemById(problemId)
 
       // Response
-      const response = this._response.success(200, 'Delete problem success.')
+      const response = this._response.success(200, 'Berhasil menghapus permasalahan.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

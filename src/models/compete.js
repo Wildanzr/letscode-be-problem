@@ -1,5 +1,6 @@
 const { model, Schema } = require('mongoose')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 15)
 
 const competeSchema = new Schema({
   _id: {
@@ -15,8 +16,7 @@ const competeSchema = new Schema({
   isLearnPath: { type: Boolean, default: false },
   isChallenge: { type: Boolean, default: false },
   problems: [{ type: Schema.Types.String, ref: 'competeProblems' }],
-  leaderboard: [{ type: Schema.Types.String, ref: 'competeLeaderboards' }],
-  languageAllowed: { type: Array, required: true },
+  languageAllowed: { type: Array, default: null },
   participants: [{ type: Schema.Types.String, ref: 'users' }]
 })
 

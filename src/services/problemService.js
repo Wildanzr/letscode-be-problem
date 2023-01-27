@@ -1,4 +1,4 @@
-const { User, Problem } = require('../models')
+const { User, Problem, Compete, Submission } = require('../models')
 
 class ProblemService {
   constructor () {
@@ -40,6 +40,14 @@ class ProblemService {
 
   async deleteProblemById (id) {
     return await Problem.findByIdAndDelete(id)
+  }
+
+  async getDashboardStats () {
+    const totalProblems = await Problem.countDocuments()
+    const totalCompetes = await Compete.find({ isChallenge: false, isLearnPath: false }).countDocuments()
+    const totalSubmissions = await Submission.countDocuments()
+
+    return { totalProblems, totalCompetes, totalSubmissions }
   }
 }
 

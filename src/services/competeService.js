@@ -109,7 +109,7 @@ class CompeteService {
       )
       .exec()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     return compete
   }
@@ -137,7 +137,7 @@ class CompeteService {
       .select('problems')
       .exec()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     return compete
   }
@@ -160,7 +160,7 @@ class CompeteService {
       .select('problems')
       .exec()
 
-    if (!compete) throw new ClientError('Compete not found.', 404)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
     // Filter based on query
     let problems = compete.problems
@@ -179,6 +179,51 @@ class CompeteService {
     compete.problems = problems
 
     return { compete, total }
+  }
+
+  async getAllJourneys () {
+    const competes = await Compete.find({ isLearnPath: true })
+      .sort({ name: 1 })
+      .select('_id problems')
+      .exec()
+
+    return competes || []
+  }
+
+  async joinCompete (competeId, userId, key) {
+    const compete = await Compete.findById(competeId)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
+
+    if (compete.key !== key) throw new ClientError('Kode tidak valid.', 400)
+
+    if (compete.participants.includes(userId)) {
+      throw new ClientError('Sudah tergabung dalam kompetisi.', 400)
+    } else {
+      compete.participants.push(userId)
+      await compete.save()
+    }
+  }
+
+  async checkJoinedCompete (competeId, userId) {
+    const compete = await Compete.findById(competeId)
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
+
+    if (compete.participants.includes(userId)) {
+      return true
+    }
+
+    return false
+  }
+
+  async getCompeteParticipantsAndCPs (competeId) {
+    const compete = await Compete.findById(competeId)
+      .select('participants problems')
+      .populate([{ path: 'participants', select: 'avatar username' }])
+      .lean()
+
+    if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
+
+    return compete
   }
 }
 

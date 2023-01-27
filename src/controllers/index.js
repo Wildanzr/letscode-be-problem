@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./problemController'),
-  ...require('./competeController')
+  ...require('./competeController'),
+  ...require('./competeProblemController')
 }

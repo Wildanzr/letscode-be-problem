@@ -48,7 +48,7 @@ const createCompeteSchema = Joi.object({
 
 const getCompetesSchema = Joi.object({
   page: Joi.number().min(1).required(),
-  limit: Joi.number().min(1).required(),
+  limit: Joi.number().min(1).max(100).required(),
   isLearnPath: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
   isChallenge: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
   on: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').allow(''),
@@ -75,6 +75,31 @@ const getCompeteProblemSchema = Joi.object({
   competeProblemId: Joi.string().required()
 })
 
+const getSubmissionInCPSchema = Joi.object({
+  competeProblemId: Joi.string().required()
+})
+
+const getSubmissionDetailSchema = Joi.object({
+  submissionId: Joi.string().required()
+})
+
+const getLeaderboardSchema = Joi.object({
+  competeProblemId: Joi.string().required(),
+  page: Joi.number().min(1).required(),
+  limit: Joi.number().min(1).max(100).required()
+})
+
+const joinCompeteSchema = Joi.object({
+  competeId: Joi.string().required(),
+  key: Joi.string().required()
+})
+
+const getStudentDataSchema = Joi.object({
+  q: Joi.string().allow(''),
+  page: Joi.number().min(1).required(),
+  limit: Joi.number().min(1).max(100).required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -87,5 +112,10 @@ module.exports = {
   getCompeteSchema,
   createCompeteProblemSchema,
   updateCompeteProblemSchema,
-  getCompeteProblemSchema
+  getCompeteProblemSchema,
+  getSubmissionInCPSchema,
+  getSubmissionDetailSchema,
+  getLeaderboardSchema,
+  joinCompeteSchema,
+  getStudentDataSchema
 }

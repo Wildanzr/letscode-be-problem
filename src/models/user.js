@@ -1,5 +1,6 @@
 const { model, Schema } = require('mongoose')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 15)
 
 const userSchema = new Schema({
   _id: {
@@ -24,16 +25,16 @@ const userSchema = new Schema({
   point: { type: Number, default: 0 },
   avatar: {
     type: String,
-    default: (user) => { return `https://ui-avatars.com/api/?name=${user.username}` }
+    default: (user) => { return `https://ui-avatars.com/api/?name=${user.username}&size=400` }
   },
-  logActivities: [{ type: Schema.Types.String, ref: 'logs' }]
+  logActivities: [{ type: Schema.Types.String, ref: 'logs' }],
+  bio: { type: String, default: null },
+  address: { type: String, default: null },
+  phone: { type: String, default: null }
 })
 
-// Add index to fullName and username
-userSchema.index({ fullName: 'text' })
-
-// Add index to point
-userSchema.index({ point: 1 })
+// Add index to username, email, fullName and role
+userSchema.index({ username: 'text', email: 'text', fullName: 'text', role: 1, point: -1 })
 
 // Create model
 const User = model('users', userSchema)
