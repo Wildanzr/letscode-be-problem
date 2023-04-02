@@ -225,6 +225,10 @@ class CompeteService {
 
     return compete
   }
+
+  async checkChallengeIsExist () {
+    return await Compete.findOne({ isChallenge: true, isLearnPath: false })
+  }
 }
 
 module.exports = {

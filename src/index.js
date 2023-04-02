@@ -60,6 +60,9 @@ app.use('/api/v1/problems', problemRoutes.router)
 app.use('/api/v1/competes', competeRoutes.router)
 app.use('/api/v1/compete-problems', competeProblemRoutes.router)
 
+// Init challenge data
+competeController.initChallengeData()
+
 const PORT = process.env.PORT || 5003
 // Listen to port
 app.listen(PORT, () => {

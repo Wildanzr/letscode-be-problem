@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { logger } = require('../utils/logger')
 
 class CompeteController {
   constructor (competeService, competeProblemService, problemSubmissionService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize) {
@@ -36,6 +37,8 @@ class CompeteController {
     this.getDashboardStats = this.getDashboardStats.bind(this)
     this.getStudentsData = this.getStudentsData.bind(this)
     this.getStudentProgressData = this.getStudentProgressData.bind(this)
+
+    this.initChallengeData = this.initChallengeData.bind(this)
   }
 
   // Competes
@@ -791,6 +794,36 @@ class CompeteController {
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       return this._response.error(res, error)
+    }
+  }
+
+  async initChallengeData () {
+    try {
+      logger('Start init challenge data')
+
+      // Check if any challenge data is already exist
+      logger('Checking any challenge data')
+      if (await this._competeService.checkChallengeIsExist()) throw new ClientError('Challenge data is already exist.', 400)
+
+      // Create challenge data
+      logger('Creating challenge data')
+      const SPECIAL_ID = process.env.SUPER_ID || 'usr-superadmin'
+      const payload = {
+        challenger: SPECIAL_ID,
+        name: 'Challenge',
+        start: null,
+        end: null,
+        description: 'Challenge',
+        isLearnPath: false,
+        isChallenge: true,
+        problems: []
+      }
+      await this._competeService.createCompete(payload)
+
+      logger('Finish init challenge data')
+      logger('--------------------------------')
+    } catch (error) {
+      logger(error)
     }
   }
 }
