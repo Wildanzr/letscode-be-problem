@@ -811,11 +811,12 @@ class CompeteController {
       const payload = {
         challenger: SPECIAL_ID,
         name: 'Challenge',
-        start: null,
-        end: null,
+        start: new Date(),
+        end: new Date('2100-12-31'),
         description: 'Challenge',
         isLearnPath: false,
         isChallenge: true,
+        languageAllowed: null,
         problems: []
       }
       await this._competeService.createCompete(payload)
