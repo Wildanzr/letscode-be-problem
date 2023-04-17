@@ -82,7 +82,7 @@ class CompeteController {
       // Response
       return res.status(response.statusCode || 201).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -110,7 +110,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -130,7 +130,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -182,7 +182,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -249,7 +249,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -269,7 +269,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -302,7 +302,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -323,7 +323,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -372,7 +372,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -416,7 +416,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -475,7 +475,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       this._response.error(res, error)
     }
   }
@@ -516,7 +516,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -568,7 +568,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -582,7 +582,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -614,7 +614,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -645,7 +645,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -685,7 +685,7 @@ class CompeteController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -799,14 +799,14 @@ class CompeteController {
 
   async initChallengeData () {
     try {
-      logger('Start init challenge data')
+      logger.info('Start init challenge data')
 
       // Check if any challenge data is already exist
-      logger('Checking any challenge data')
+      logger.info('Checking any challenge data')
       if (await this._competeService.checkChallengeIsExist()) throw new ClientError('Challenge data is already exist.', 400)
 
       // Create challenge data
-      logger('Creating challenge data')
+      logger.info('Creating challenge data')
       const SPECIAL_ID = process.env.SUPER_ID || 'usr-superadmin'
       const payload = {
         challenger: SPECIAL_ID,
@@ -821,10 +821,9 @@ class CompeteController {
       }
       await this._competeService.createCompete(payload)
 
-      logger('Finish init challenge data')
-      logger('--------------------------------')
+      logger.info('Finish init challenge data')
     } catch (error) {
-      logger(error)
+      logger.error(error)
     }
   }
 }

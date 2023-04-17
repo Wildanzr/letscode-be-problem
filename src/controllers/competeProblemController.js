@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { logger } = require('../utils/logger')
 
 class CompeteProblemController {
   constructor (competeProblemService, problemSubmissionService, submissionService, userService, validator, response, tokenize) {
@@ -44,7 +45,7 @@ class CompeteProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -75,7 +76,7 @@ class CompeteProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -104,7 +105,7 @@ class CompeteProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -135,7 +136,7 @@ class CompeteProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }

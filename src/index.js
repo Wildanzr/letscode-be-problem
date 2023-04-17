@@ -1,4 +1,5 @@
 require('dotenv').config()
+const { logger } = require('./utils/logger')
 
 // Init express
 const express = require('express')
@@ -48,12 +49,14 @@ app.use(express.json())
 // Use cors
 app.use(cors())
 
+const DB_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/'
+
 // Connect to mongodb
-mongoose.connect(process.env.DATABASE_URL, {
+mongoose.connect(DB_URL, {
   useNewURLParser: true,
   useUnifiedTopology: true
-}).then(console.log('Connected to database'))
-  .catch(err => console.log(err))
+}).then(logger.info('Connected to database'))
+  .catch(err => logger.error(err))
 
 // Use routes
 app.use('/api/v1/problems', problemRoutes.router)
@@ -66,5 +69,5 @@ competeController.initChallengeData()
 const PORT = process.env.PORT || 5003
 // Listen to port
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  logger.info(`Server running on port ${PORT}`)
 })

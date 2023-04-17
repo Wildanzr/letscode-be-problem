@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { logger } = require('../utils/logger')
 
 class ProblemController {
   constructor (problemService, sampleCaseService, testCaseService, validator, response, tokenize) {
@@ -68,7 +69,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -95,7 +96,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -138,7 +139,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -180,7 +181,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -222,7 +223,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -249,7 +250,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -292,7 +293,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -332,7 +333,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -366,7 +367,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -387,7 +388,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -421,7 +422,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
@@ -467,7 +468,7 @@ class ProblemController {
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return this._response.error(res, error)
     }
   }
