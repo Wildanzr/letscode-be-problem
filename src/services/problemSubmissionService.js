@@ -5,6 +5,14 @@ class ProblemSubmissionService {
     this.name = 'ProblemSubmissionService'
   }
 
+  async getProblemSubmissionById (_id) {
+    return await ProblemSubmission.findById(_id)
+  }
+
+  async getProblemSubmissionByCP (competeProblemId) {
+    return await ProblemSubmission.findOne({ competeProblemId })
+  }
+
   async getSubmissionsInCP (competeProblemId, userId) {
     const submission = await ProblemSubmission.findOne({ competeProblemId, userId })
       .select('listOfSubmission currentPoints')

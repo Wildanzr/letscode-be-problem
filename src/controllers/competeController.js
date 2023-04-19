@@ -224,6 +224,9 @@ class CompeteController {
         const problem = await this._problemService.getProblemById(problemId)
         if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
+        const problemSubmission = await this._problemSubmissionService.getProblemSubmissionByCP(cp)
+        if (!problemSubmission) throw new ClientError('Pengumpulan permasalahan tidak ditemukan, 404')
+
         // Iterate problem test cases, then delete it
         for (const testCaseId of problem.testCases) {
           await this._testCaseService.deleteTestCaseById(testCaseId)
@@ -233,6 +236,9 @@ class CompeteController {
         for (const sampleCaseId of problem.sampleCases) {
           await this._sampleCaseService.deleteSampleCaseById(sampleCaseId)
         }
+
+        // Delete problemSubmission
+        await problemSubmission.remove()
 
         // Delete compete problem
         await competeProblem.remove()
@@ -442,11 +448,14 @@ class CompeteController {
       if (!compete) throw new ClientError('Kompetisi tidak ditemukan.', 404)
 
       // Make sure user is the owner of the compete
-      if (compete.challenger !== _id) throw new ClientError('Unauthorize to delete this problem compete.', 401)
+      if (compete.challenger !== _id) throw new ClientError('Tidak diperkenankan menghapus.', 401)
 
       // Check if compete problem exists
       const competeProblem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
       if (!competeProblem) throw new ClientError('Permasalahan dalam kompetisi tidak ditemukan.', 404)
+
+      const problemSubmission = await this._problemSubmissionService.getProblemSubmissionByCP(competeProblemId)
+      if (!problemSubmission) throw new ClientError('Pengumpulan permasalahan tidak ditemukan, 404')
 
       // Get problem
       const problem = await this._problemService.getProblemById(competeProblem.problemId)
@@ -462,8 +471,14 @@ class CompeteController {
         await this._sampleCaseService.deleteSampleCaseById(sampleCaseId)
       }
 
+      // Delete problemSubmission
+      await problemSubmission.remove()
+
       // Delete compete problem
-      await this._competeProblemService.deleteCompeteProblem(competeProblemId)
+      await competeProblem.remove()
+
+      // Delete problem
+      await problem.remove()
 
       // Remove compete problem from compete
       const index = compete.problems.indexOf(competeProblemId)
