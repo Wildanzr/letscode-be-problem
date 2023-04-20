@@ -63,8 +63,8 @@ class CompeteService {
       on === undefined
     ) { on = true } else if (on === 'false' || on === 'no' || on === 0 || on === '0') { on = false } else on = true
 
-    // Get competes based on query
-    const competes = await Compete.find({
+    // Query config
+    const config = {
       name: { $regex: q, $options: 'i' },
       participants:
         participantId === '' ? { $exists: true } : { $in: [participantId] },
@@ -72,7 +72,13 @@ class CompeteService {
       end: on ? { $gte: new Date() } : { $lte: new Date() },
       isLearnPath,
       isChallenge
-    })
+    }
+
+    // If any challengerId, remove end config
+    if (challengerId !== '') delete config.end
+
+    // Get competes based on query
+    const competes = await Compete.find(config)
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ name: 1 })
