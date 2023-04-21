@@ -225,7 +225,6 @@ class CompeteController {
         if (!problem) throw new ClientError('Permasalahan tidak ditemukan.', 404)
 
         const problemSubmission = await this._problemSubmissionService.getProblemSubmissionByCP(cp)
-        if (!problemSubmission) throw new ClientError('Pengumpulan permasalahan tidak ditemukan, 404')
 
         // Iterate problem test cases, then delete it
         for (const testCaseId of problem.testCases) {
@@ -238,10 +237,10 @@ class CompeteController {
         }
 
         // Delete problemSubmission
-        await problemSubmission.remove()
+        if (problemSubmission) await problemSubmission.remove()
 
         // Delete compete problem
-        await competeProblem.remove()
+        if (competeProblem) await competeProblem.remove()
 
         // Delete problem
         await problem.remove()
@@ -452,10 +451,8 @@ class CompeteController {
 
       // Check if compete problem exists
       const competeProblem = await this._competeProblemService.findCompeteProblemById(competeProblemId)
-      if (!competeProblem) throw new ClientError('Permasalahan dalam kompetisi tidak ditemukan.', 404)
 
       const problemSubmission = await this._problemSubmissionService.getProblemSubmissionByCP(competeProblemId)
-      if (!problemSubmission) throw new ClientError('Pengumpulan permasalahan tidak ditemukan, 404')
 
       // Get problem
       const problem = await this._problemService.getProblemById(competeProblem.problemId)
@@ -472,10 +469,10 @@ class CompeteController {
       }
 
       // Delete problemSubmission
-      await problemSubmission.remove()
+      if (problemSubmission) await problemSubmission.remove()
 
       // Delete compete problem
-      await competeProblem.remove()
+      if (competeProblem) await competeProblem.remove()
 
       // Delete problem
       await problem.remove()
