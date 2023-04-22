@@ -23,6 +23,7 @@ const userSchema = new Schema({
   isVerified: { type: Boolean, default: false },
   verifiedAt: { type: Date, default: null },
   point: { type: Number, default: 0 },
+  progress: { type: Number, default: 0 },
   avatar: {
     type: String,
     default: (user) => { return `https://ui-avatars.com/api/?name=${user.username}&size=400` }

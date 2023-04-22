@@ -9,6 +9,10 @@ class UserService {
     return await User.findById(_id)
   }
 
+  async updateUserById (_id, data) {
+    return await User.findByIdAndUpdate(_id, data, { new: true })
+  }
+
   async getTop25Leaderboard () {
     return await User.find({ role: 0, isVerified: true })
       .sort({ point: -1 })
@@ -29,6 +33,12 @@ class UserService {
     return { totalTeacher, totalStudent }
   }
 
+  async getAllStudents () {
+    return await User.find({ role: 0, isVerified: true })
+      .select('_id progress point')
+      .exec()
+  }
+
   async getStudentsData (query) {
     let { q, page, limit } = query
     if (q === '' || q === undefined) q = ''
@@ -41,7 +51,7 @@ class UserService {
     }).skip((page - 1) * limit)
       .limit(limit)
       .sort({ fullName: 1 })
-      .select('_id fullName username avatar point')
+      .select('_id fullName username avatar point progress')
       .exec()
 
     // Count total students

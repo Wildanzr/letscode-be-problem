@@ -39,6 +39,7 @@ class CompeteController {
     this.getStudentProgressData = this.getStudentProgressData.bind(this)
 
     this.initChallengeData = this.initChallengeData.bind(this)
+    this.cronJobUpdateStudentProgress = this.cronJobUpdateStudentProgress.bind(this)
   }
 
   // Competes
@@ -800,6 +801,9 @@ class CompeteController {
       // Count progress as percentage with 2 decimal places
       const progress = parseFloat((solved / total * 100).toFixed(2))
 
+      // Save progress to user
+      await this._userService.updateUserById(studentId, { progress })
+
       // Response
       const response = this._response.success(200, 'Berhasil mengecek kemajuan belajar.', { progress })
 
@@ -837,6 +841,41 @@ class CompeteController {
     } catch (error) {
       logger.error(error)
     }
+  }
+
+  async cronJobUpdateStudentProgress () {
+    // Get all compete journeys
+    const journeys = await this._competeService.getAllJourneys()
+
+    // Get all students
+    const students = await this._userService.getAllStudents()
+
+    // Iterate students
+    for (const student of students) {
+      // Count progress
+      let solved = 0
+      let total = 0
+
+      // Iterate journeys
+      for (const journey of journeys) {
+        const { problems } = journey
+        total += problems.length
+
+        // Iterate problems
+        for (const problem of problems) {
+          const isDone = await this._problemSubmissionService.checkCPIsDone(problem, student._id)
+          if (isDone === 2) solved++
+        }
+      }
+
+      // Count progress as percentage with 2 decimal places
+      const progress = parseFloat((solved / total * 100).toFixed(2))
+
+      // Save progress to user
+      await this._userService.updateUserById(student._id, { progress })
+    }
+
+    logger.info('Finish cron job update student progress')
   }
 }
 

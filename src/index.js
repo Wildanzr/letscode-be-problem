@@ -1,4 +1,6 @@
 require('dotenv').config()
+
+const cron = require('node-cron')
 const { logger } = require('./utils/logger')
 
 // Init express
@@ -49,7 +51,7 @@ app.use(express.json())
 // Use cors
 app.use(cors())
 
-const DB_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/'
+const DB_URL = process.env.DATABASE_URL || 'mongodb://localhost:27017/letscode'
 
 // Connect to mongodb
 mongoose.connect(DB_URL, {
@@ -65,6 +67,16 @@ app.use('/api/v1/compete-problems', competeProblemRoutes.router)
 
 // Init challenge data
 competeController.initChallengeData()
+
+// Cron job update student progress
+const task = cron.schedule('0 0 * * *', () => {
+  logger.info('Start cron job update student progress')
+  competeController.cronJobUpdateStudentProgress()
+}, {
+  scheduled: true,
+  timezone: 'Asia/Jakarta'
+})
+task.start()
 
 const PORT = process.env.PORT || 5003
 // Listen to port
