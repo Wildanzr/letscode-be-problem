@@ -15,6 +15,8 @@ class MaterialController {
     this.getMaterials = this.getMaterials.bind(this)
     this.updateMaterial = this.updateMaterial.bind(this)
     this.deleteMaterial = this.deleteMaterial.bind(this)
+    this.registerParticipant = this.registerParticipant.bind(this)
+    this.checkAlreadyParticipant = this.checkAlreadyParticipant.bind(this)
   }
 
   // Material
@@ -73,19 +75,20 @@ class MaterialController {
   }
 
   async getMaterials (req, res) {
-    const { page, limit } = req.query
+    const { page, limit, q } = req.query
 
     try {
       // Validate payload
       this._validator.validateGetMaterials({ page, limit })
 
       // Get materials
-      const { materials, total } = await this._materialService.getMaterials({ page, limit })
+      const { materials, total } = await this._materialService.getMaterials({ page, limit, q })
 
       // Meta data
       const meta = {
         total,
         limit,
+        page,
         totalPages: Math.ceil(total / limit)
       }
 
@@ -160,6 +163,72 @@ class MaterialController {
 
       // Response
       const response = this._response.success(200, 'Berhasil menghapus materi')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      logger.error(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async registerParticipant (req, res) {
+    const token = req.headers.authorization
+    const { materialId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('Tidak ada otorisasi', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._materialService.findUserById(_id)
+      if (!user) throw new ClientError('Otorisasi tidak valid', 401)
+
+      // Validate payload
+      this._validator.validateGetMaterial({ materialId })
+
+      // Get material data
+      const material = await this._materialService.getMaterialById(materialId)
+      if (!material) throw new ClientError('Materi tidak ditemukan', 404)
+
+      // Register participant
+      await this._materialService.addParticipant(materialId, _id)
+
+      // Response
+      const response = this._response.success(200, 'Berhasil mendaftar sebagai peserta')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      logger.error(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkAlreadyParticipant (req, res) {
+    const token = req.headers.authorization
+    const { materialId } = req.params
+
+    try {
+      // Check token
+      if (!token) throw new ClientError('Tidak ada otorisasi', 401)
+
+      // Verify token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Check user _id
+      const user = await this._materialService.findUserById(_id)
+      if (!user) throw new ClientError('Otorisasi tidak valid', 401)
+
+      // Validate payload
+      this._validator.validateGetMaterial({ materialId })
+
+      // Check already participant
+      const participant = await this._materialService.checkAlreadyParticipant(materialId, _id)
+
+      // Response
+      const response = this._response.success(200, 'Berhasil memeriksa status peserta', { isDone: !!participant })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

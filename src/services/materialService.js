@@ -19,19 +19,25 @@ class MaterialService {
   }
 
   async getMaterials (query) {
-    let { page, limit } = query
+    let { page, limit, q } = query
 
+    if (q === '' || q === undefined) q = ''
     if (page === '' || page === undefined) page = 1
     if (limit === '' || limit === undefined) limit = 10
 
-    const materials = await Material.find()
+    // Query config
+    const config = {
+      title: { $regex: q, $options: 'i' }
+    }
+
+    const materials = await Material.find(config)
       .skip((page - 1) * limit)
       .limit(limit)
-      .sort({ _id: -1 })
-      .select('_id title content')
+      .sort({ title: 1 })
+      .select('_id title')
       .exec()
 
-    const total = await Material.countDocuments()
+    const total = await Material.countDocuments(config)
 
     return { materials, total }
   }
@@ -42,6 +48,23 @@ class MaterialService {
 
   async deleteMaterialById (_id) {
     return await Material.findByIdAndDelete(_id)
+  }
+
+  async addParticipant (materialId, userId) {
+    const material = await this.getMaterialById(materialId)
+    const setParticipant = new Set(material.participants)
+
+    if (setParticipant.has(userId)) {
+      return null
+    } else {
+      setParticipant.add(userId)
+      material.participants = Array.from(setParticipant)
+      return await material.save()
+    }
+  }
+
+  async checkAlreadyParticipant (materialId, userId) {
+    return await Material.findOne({ _id: materialId, participants: userId })
   }
 }
 

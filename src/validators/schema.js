@@ -111,7 +111,8 @@ const getMaterialSchema = Joi.object({
 
 const getMaterialsSchema = Joi.object({
   page: Joi.number().min(1).required(),
-  limit: Joi.number().min(1).max(100).required()
+  limit: Joi.number().min(1).max(100).required(),
+  q: Joi.string().allow('')
 })
 
 const updateMaterialSchema = Joi.object({

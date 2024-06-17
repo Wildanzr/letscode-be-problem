@@ -8,7 +8,8 @@ const materialSchema = new Schema({
     default: () => { return `mtr-${nanoid(15)}` }
   },
   title: { type: String, required: true, minlength: 3 },
-  content: { type: String, required: true }
+  content: { type: String, required: true },
+  participants: [{ type: Schema.Types.String, ref: 'users' }]
 })
 
 // Add index on title
