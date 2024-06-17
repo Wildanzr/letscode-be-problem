@@ -109,6 +109,11 @@ const getMaterialSchema = Joi.object({
   materialId: Joi.string().required()
 })
 
+const getMaterialsSchema = Joi.object({
+  page: Joi.number().min(1).required(),
+  limit: Joi.number().min(1).max(100).required()
+})
+
 const updateMaterialSchema = Joi.object({
   title: Joi.string().required(),
   content: Joi.string().required()
@@ -134,5 +139,6 @@ module.exports = {
   getStudentDataSchema,
   createMatrialSchema,
   getMaterialSchema,
+  getMaterialsSchema,
   updateMaterialSchema
 }

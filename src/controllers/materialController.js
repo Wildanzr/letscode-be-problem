@@ -12,6 +12,7 @@ class MaterialController {
     // Bind the material methods
     this.createMaterial = this.createMaterial.bind(this)
     this.getMaterial = this.getMaterial.bind(this)
+    this.getMaterials = this.getMaterials.bind(this)
     this.updateMaterial = this.updateMaterial.bind(this)
     this.deleteMaterial = this.deleteMaterial.bind(this)
   }
@@ -63,6 +64,33 @@ class MaterialController {
 
       // Response
       const response = this._response.success(200, 'Berhasil mendapatkan materi', { material })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      logger.error(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getMaterials (req, res) {
+    const { page, limit } = req.query
+
+    try {
+      // Validate payload
+      this._validator.validateGetMaterials({ page, limit })
+
+      // Get materials
+      const { materials, total } = await this._materialService.getMaterials({ page, limit })
+
+      // Meta data
+      const meta = {
+        total,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+
+      // Response
+      const response = this._response.success(200, 'Berhasil mendapatkan materi', { materials }, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
