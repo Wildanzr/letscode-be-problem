@@ -16,7 +16,10 @@ const {
   getSubmissionDetailSchema,
   getLeaderboardSchema,
   joinCompeteSchema,
-  getStudentDataSchema
+  getStudentDataSchema,
+  createMatrialSchema,
+  getMaterialSchema,
+  updateMaterialSchema
 } = require('./schema')
 
 class Validator {
@@ -106,6 +109,21 @@ class Validator {
 
   validateGetStudentsData (payload) {
     const { error } = getStudentDataSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateMaterial (payload) {
+    const { error } = createMatrialSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetMaterial (payload) {
+    const { error } = getMaterialSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateUpdateMaterial (payload) {
+    const { error } = updateMaterialSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

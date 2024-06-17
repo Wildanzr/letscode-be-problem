@@ -14,7 +14,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 
 // Services
-const { ProblemService, SampleCaseService, TestCaseService, CompeteService, CompeteProblemService, UserService, ProblemSubmissionService, SubmissionService } = require('./services')
+const { ProblemService, SampleCaseService, TestCaseService, CompeteService, CompeteProblemService, UserService, ProblemSubmissionService, SubmissionService, MaterialService } = require('./services')
 const problemService = new ProblemService()
 const sampleCaseService = new SampleCaseService()
 const testCaseService = new TestCaseService()
@@ -23,6 +23,7 @@ const competeProblemService = new CompeteProblemService()
 const userService = new UserService()
 const problemSubmissionService = new ProblemSubmissionService()
 const submissionService = new SubmissionService()
+const materialService = new MaterialService()
 
 // Utils
 const { Response, Tokenize } = require('./utils')
@@ -34,16 +35,18 @@ const { Validator } = require('./validators')
 const validator = new Validator()
 
 // Controllers
-const { ProblemController, CompeteController, CompeteProblemController } = require('./controllers')
+const { ProblemController, CompeteController, CompeteProblemController, MaterialController } = require('./controllers')
 const problemController = new ProblemController(problemService, sampleCaseService, testCaseService, validator, response, tokenize)
 const competeController = new CompeteController(competeService, competeProblemService, problemSubmissionService, problemService, testCaseService, sampleCaseService, userService, validator, response, tokenize)
 const competeProblemController = new CompeteProblemController(competeProblemService, problemSubmissionService, submissionService, userService, validator, response, tokenize)
+const materialController = new MaterialController(materialService, validator, response, tokenize)
 
 // Routes
-const { ProblemRoutes, CompeteRoutes, CompeteProblemRoutes } = require('./routes')
+const { ProblemRoutes, CompeteRoutes, CompeteProblemRoutes, MaterialRoutes } = require('./routes')
 const problemRoutes = new ProblemRoutes(express, problemController)
 const competeRoutes = new CompeteRoutes(express, competeController)
 const competeProblemRoutes = new CompeteProblemRoutes(express, competeProblemController)
+const materialRoutes = new MaterialRoutes(express, materialController)
 
 // Use body parser
 app.use(express.json())
@@ -64,6 +67,7 @@ mongoose.connect(DB_URL, {
 app.use('/api/v1/problems', problemRoutes.router)
 app.use('/api/v1/competes', competeRoutes.router)
 app.use('/api/v1/compete-problems', competeProblemRoutes.router)
+app.use('/api/v1/materials', materialRoutes.router)
 
 // Init challenge data
 competeController.initChallengeData()

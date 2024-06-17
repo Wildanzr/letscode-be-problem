@@ -6,5 +6,6 @@ module.exports = {
   ...require('./competeProblemService'),
   ...require('./userService'),
   ...require('./problemSubmissionService'),
-  ...require('./submissionService')
+  ...require('./submissionService'),
+  ...require('./materialService')
 }

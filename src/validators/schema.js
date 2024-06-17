@@ -100,6 +100,20 @@ const getStudentDataSchema = Joi.object({
   limit: Joi.number().min(1).max(100).required()
 })
 
+const createMatrialSchema = Joi.object({
+  title: Joi.string().required(),
+  content: Joi.string().required()
+})
+
+const getMaterialSchema = Joi.object({
+  materialId: Joi.string().required()
+})
+
+const updateMaterialSchema = Joi.object({
+  title: Joi.string().required(),
+  content: Joi.string().required()
+})
+
 module.exports = {
   createProblemSchema,
   getProblemSchema,
@@ -117,5 +131,8 @@ module.exports = {
   getSubmissionDetailSchema,
   getLeaderboardSchema,
   joinCompeteSchema,
-  getStudentDataSchema
+  getStudentDataSchema,
+  createMatrialSchema,
+  getMaterialSchema,
+  updateMaterialSchema
 }

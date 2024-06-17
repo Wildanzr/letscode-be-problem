@@ -1,5 +1,6 @@
 module.exports = {
   ...require('./problemRoutes'),
   ...require('./competeRoutes'),
-  ...require('./competeProblemRoutes')
+  ...require('./competeProblemRoutes'),
+  ...require('./materialRoutes')
 }
